@@ -1,0 +1,38 @@
+/*BAZOOKAS STYLE RESET/NORMALIZE*/
+*,
+*:before,
+*:after {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  /*make sure box sizing is same in every browser*/
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  min-height: 100%;
+  position: relative;
+}
+body {
+  /*desired base font settings*/
+  font-size: 14px;
+  color: black;
+}
+
+// HTML5 display-role reset for older browsers
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}

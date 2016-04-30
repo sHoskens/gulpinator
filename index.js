@@ -10,8 +10,10 @@ var gulp        = require('gulp'),
 function initGulp() {
   require('events').EventEmitter.prototype._maxListeners = 30;
 
-  // Move html to the tmp folder. If it's an angular project, all angular html templates
-  // will be compiled to a templatecache linked to that module, depending on folder name.
+  // Copies all the default files (listed in default array above) to the current working directory.
+  gulp.task('init', require('./tasks/init').init);
+
+  // Move html to the tmp folder.
   gulp.task('compile-templates', require('./tasks/compileTemplates').getTask());
 
   // Compile sass to css
@@ -28,6 +30,7 @@ function initGulp() {
     gulp.task('compile-template-cache', ['compile-templates'],  require('./tasks/templateCache').getTask());
   }
 
+  // Bundles all chosen library files
   gulp.task('bundle-libs', require('./tasks/libs').getTask());
 
   // TODO move fonts, and check for possible extra font tasks
@@ -86,7 +89,12 @@ function initGulp() {
   // jscs:disable
   gulp.task('build', buildTasks, function () {
     del.sync('tmp');
-    painter.paintBazookas();
+    if( config.paint === 'Gulpinator') {
+      painter.paintGulpinator();
+    }
+    else if (config.paint === 'Bazookas') {
+      painter.paintBazookas();
+    }
   });
 
   gulp.task('serve', ['build'], require('./tasks/serve-frontend').getTask());

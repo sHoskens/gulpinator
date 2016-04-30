@@ -1,0 +1,11 @@
+<div id="todoApp" >
+  <input id="todoInput" ng-model="newTodoItem" placeholder="Insert Todo item"></input>
+  <button id="todoBtn" ng-click="addTodoItem()">add me</button>
+
+  <ul id="todoList">
+    <li ng-repeat="todoItem in todoList" ng-class="{'completed': todoItem.completed}" ng-click="changeCompletion(todoItem)">
+      {{todoItem.title}}
+      <button id="deleteBtn" ng-click="deleteTodoItem(todoItem)">delete</button>
+    </li>
+  </ul>
+</div>

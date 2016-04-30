@@ -1,10 +1,23 @@
 // The config.json file is used to set all config parameters. Refer to the README.md
 // for more information.
-var baseConfig  = require('../../gulp.config.js'),
-    config      = baseConfig.default,
+var baseConfig,
+    config,
     util        = require('gulp-util'),
     _           = require('lodash'),
     hasCompiled = false;
+
+try {
+  baseConfig = require(process.cwd() + '/gulp.config.js');
+}
+catch (err) {
+  try {
+    baseConfig = require('../defaults/gulp.config.js');
+  }
+  catch (err) {
+    console.log('Default config file not found! What have you done?');
+    console.log(err);
+  }
+}
 
 module.exports = {
   getConfig: function() {
@@ -18,6 +31,10 @@ module.exports = {
       if (util.env.env && baseConfig[util.env.env]) {
         config = _.merge(config, baseConfig[util.env.env]);
       }
+      else {
+        config = baseConfig.default;
+      }
+      hasCompiled = true;
     }
 
     return config;

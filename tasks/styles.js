@@ -3,7 +3,7 @@ var gulp          = require('gulp'),
     sass          = require('gulp-sass'),
     autoprefixer  = require('gulp-autoprefixer'),
     concat        = require('gulp-concat'),
-    minifyCss     = require('gulp-minify-css'),
+    cleanCSS      = require('gulp-clean-css'),
     browserSync   = require('browser-sync'),
     gulpif        = require('gulp-if'),
     rev           = require('gulp-rev'),
@@ -24,7 +24,7 @@ var compileCssStream = function() {
     .pipe(sourcemaps.init({ loadMaps: true }))
       .pipe(sass())
       .pipe(autoprefixer('> 5%'))
-      .pipe(minifyCss())
+      .pipe(cleanCSS({compatibility: 'ie9'}))
     .pipe(sourcemaps.write('./'))
     .pipe(gulpif(config.rev, rev()))
 

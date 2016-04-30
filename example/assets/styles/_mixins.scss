@@ -1,0 +1,296 @@
+/*////////////////////////////////////////
+______                      _
+| ___ \                    | |
+| |_/ / __ _ _______   ___ | | ____ _ ___
+| ___ \/ _` |_  / _ \ / _ \| |/ / _` / __|
+| |_/ / (_| |/ / (_) | (_) |   < (_| \__ \
+\____/ \__,_/___\___/ \___/|_|\_\__,_|___/
+
+BAZOOKAS MIXIN SHEET
+
+   - Table of contents -
+   1. PREFIX MIXINS:
+        Generate browser prefixes for common
+        css (transforms, etc...)
+   2. HANDY CSS FIXES
+        Toolbox of various small css fixes
+   3. BREAKPOINTS
+        Define media query breakpoints for
+        your project here!
+   4. BROWSER COMPATIBILITY
+        Various fixes for nasty browsers
+        Includes opacity, rem support and
+        iOS fix for vh, vw, vmin and vmax
+   5. ANIMATIONS
+        Eases the creation of animations
+////////////////////////////////////////*/
+
+/*//////////////////////////////////////*/
+/*////////// 1. PREFIX MIXINS //////////*/
+/*//////////////////////////////////////*/
+
+// NOTE: Due to gulp-autoprefixer, you can forget all about browser prefixing. Yay!
+
+// Transitions with prefixes  - usage: @include transition(color .3s ease);
+// @mixin transition($args...) {
+//   -webkit-transition: $args;
+//   -moz-transition: $args;
+//   -ms-transition: $args;
+//   -o-transition: $args;
+//   transition: $args;
+// }
+//
+// // Transform with prefixes
+// // generic transform
+// @mixin transform($transforms) {
+// 	   -moz-transform: $transforms;
+// 	     -o-transform: $transforms;
+// 	    -ms-transform: $transforms;
+// 	-webkit-transform: $transforms;
+//           transform: $transforms;
+// }
+// // rotate - usage: @include rotate(90);
+// @mixin rotate ($deg) {
+//   @include transform(rotate(#{$deg}deg));
+// }
+// // scale - usage: @include scale(2);
+// @mixin scale($scale) {
+// 	 @include transform(scale($scale));
+// }
+// // scaleX - usage: @include scaleX(2);
+// @mixin scaleX($scale) {
+// 	 @include transform(scaleX($scale));
+// }
+// // scaleY - usage: @include scaleY(2);
+// @mixin scaleY($scale) {
+// 	 @include transform(scaleY($scale));
+// }
+// // translate - usage: @include translate(1, -1);
+// @mixin translate ($x, $y) {
+//    @include transform(translate($x, $y));
+// }
+// // skew - usage: @include skew(30, 20);
+// @mixin skew ($x, $y) {
+//    @include transform(skew(#{$x}deg, #{$y}deg));
+// }
+//
+// //transform origin
+// @mixin transform-origin ($origin) {
+//       moz-transform-origin: $origin;
+// 	     -o-transform-origin: $origin;
+// 	    -ms-transform-origin: $origin;
+// 	-webkit-transform-origin: $origin;
+//           transform-origin: $origin;
+// }
+//
+// @mixin box-sizing ($value: border-box) {
+//   -webkit-box-sizing: $value;
+//   -moz-box-sizing: $value;
+//   -ms-box-sizing: $value;
+//   box-sizing: $value;
+// }
+
+/*//////////////////////////////////////*/
+/*///////// 2. HANDY CSS FIXES /////////*/
+/*//////////////////////////////////////*/
+
+//clearfix for preventing floats at both sides - usage: @include clearfix();
+@mixin clearfix() {
+  &:before,
+  &:after {
+      content: " "; /* 1 */
+      display: table; /* 2 */
+  }
+  &:after {
+      clear: both;
+  }
+  & {
+      *zoom: 1;
+  }
+}
+
+// See http://zerosixthree.se/8-sass-mixins-you-must-have-in-your-toolbox/
+// Visually hide an element (display:none prevents screen readers from reading it)
+// usage: @extend %visuallyhidden;
+%visuallyhidden {
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip: rect(0, 0, 0, 0);
+  position: absolute;
+}
+
+// Centers an element in a relative parent, no matter width or height
+// usage: @include centerer;
+@mixin centerer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Truncate text with an ellipsis (i.e. Long text is loooo...)
+// usage: @include text-truncate
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*//////////////////////////////////////*/
+/*/////////// 3. BREAKPOINTS ///////////*/
+/*//////////////////////////////////////*/
+
+// Define breakpoints here.
+// Usage: @include bp-small { ... }
+@mixin bp-large {
+  @media only screen and (min-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin bp-medium {
+  @media only screen and (max-width: 1023px) {
+    @content;
+  }
+}
+
+@mixin bp-small {
+  @media only screen and (max-width: 600px) {
+    @content;
+  }
+}
+
+/*//////////////////////////////////////*/
+/*////// 4. BROWSER COMPATIBILITY //////*/
+/*//////////////////////////////////////*/
+
+// Calculates rem size based on px value and supports untill IE8 with fallback
+// usage: @include font-size(14px);
+@function calculateRem($size) {
+  $remSize: $size / 16px;
+  @return $remSize * 1rem;
+}
+
+@mixin font-size($size) {
+  font-size: $size;
+  font-size: calculateRem($size);
+}
+
+// Opacity support down to IE5 - usage: @include opacity(0.5);
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacity-ie: $opacity * 100;
+  filter: alpha(opacity=$opacity-ie); //IE8
+}
+
+
+/**
+ * Fix for vw, vh, vmin, vmax on iOS 7.
+ * http://caniuse.com/#feat=viewport-units
+ *
+ * This fix works by replacing viewport units with px values on known screen sizes.
+ *
+ * iPhone 6 and 6 Plus cannot run iOS 7, so are not targeted by this fix.
+ * Target devices running iOS 8+ will incidentally execute the media query,
+ * but this will still produce the expected result; so this is not a problem.
+ *
+ * As an example, replace:
+ *
+ *   height: 50vh;
+ *   font-size: 5vmin;
+ *
+ * with:
+ *
+ *   @include viewport-unit(height, 50vh);
+ *   @include viewport-unit(font-size, 5vmin);
+ */
+@mixin viewport-unit($property, $value) {
+  #{$property}: $value;
+
+  $unit: unit($value);
+
+  @if (index((vw, vh, vmin, vmax), $unit) != null) {
+    $devices: (
+      (768px, 1024px), // iPad (all versions)
+      (320px, 480px),  // iPhone 4
+      (320px, 568px)   // iPhone 5, 5C, 5S
+    );
+
+    @each $device in $devices {
+      $device-width: nth($device, 1);
+      $device-height: nth($device, 2);
+
+      $device-query: "only screen and (-webkit-min-device-pixel-ratio: 1)";
+      $device-query: "#{$device-query} and (device-width: #{$device-width})";
+      $device-query: "#{$device-query} and (device-height: #{$device-height})";
+
+      $percent: $value / ($value * 0 + 1); // see https://github.com/sass/sass/issues/533
+
+      $percent-width: $device-width * $percent / 100;
+      $percent-height: $device-height * $percent / 100;
+
+      @if ($unit == vmin or $unit == vmax) {
+        @media #{$device-query} {
+          #{$property}: if($unit == vmin, $percent-width, $percent-height);
+        }
+      }
+      @else {
+        @media #{$device-query} and (orientation: portrait) {
+          #{$property}: if($unit == vw, $percent-width, $percent-height);
+        }
+
+        @media #{$device-query} and (orientation: landscape) {
+          #{$property}: if($unit == vw, $percent-height, $percent-width);
+        }
+      }
+    }
+  }
+}
+
+/*//////////////////////////////////////*/
+/*//////////// 4. ANIMATIONS ///////////*/
+/*//////////////////////////////////////*/
+
+@mixin keyframes($animation-name) {
+    @-webkit-keyframes #{$animation-name} {
+        @content;
+    }
+    @-moz-keyframes #{$animation-name} {
+        @content;
+    }
+    @-ms-keyframes #{$animation-name} {
+        @content;
+    }
+    @-o-keyframes #{$animation-name} {
+        @content;
+    }
+    @keyframes #{$animation-name} {
+        @content;
+    }
+}
+
+@mixin animation($str) {
+  -webkit-animation: #{$str};
+  -moz-animation: #{$str};
+  -ms-animation: #{$str};
+  -o-animation: #{$str};
+  animation: #{$str};
+}
+
+/* Complete usage example:
+  @include keyframes(slide-down) {
+    0% { opacity: 1; }
+    90% { opacity: 0; }
+  }
+
+  .element {
+    width: 100px;
+    height: 100px;
+    background: black;
+    @include animation('slide-down 5s 3');
+  }
+*/

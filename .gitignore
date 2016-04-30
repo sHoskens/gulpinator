@@ -65,3 +65,4 @@ dist
 .sass-cache
 public/
 tmp/
+.gitconfig

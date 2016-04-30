@@ -23,7 +23,9 @@ var getFileNames = function(filepath, targetFile) {
   fileNames.targetName = fileNames.targetName.replace('.html', '');
 
   fileNames.fileName = filepath.substring(filepath.lastIndexOf('/') + 1);
-  fileNames.fileName = fileNames.fileName.substring(0, fileNames.fileName.lastIndexOf('-'));
+  if (config.rev) {
+    fileNames.fileName = fileNames.fileName.substring(0, fileNames.fileName.lastIndexOf('-'));
+  }
 
   return fileNames;
 };

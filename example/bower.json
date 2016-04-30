@@ -1,0 +1,31 @@
+{
+  "name": "angular_bazookas",
+  "version": "0.1.0",
+  "authors": [
+    "Sven Hoskens <sven@bazookas.be>"
+  ],
+  "description": "starter project for an angular app by Bazookas",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "assets/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "lodash": "^4.11.1",
+    "angular-mocks": "~1.4.8",
+    "angular-ui-router": "~0.2.15",
+    "restangular": "~1.5.1",
+    "foundation-sites": "~6.1.2",
+    "moment": "~2.11.1",
+    "jquery": "~2.2.0"
+  }
+}

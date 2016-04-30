@@ -87,7 +87,26 @@ var config = {
     //    desired. See scriptsPerPage property below for more details.
     // Note that with options 2 and 3 we can do our own minification, which
     // might be handy if not all of the chosen libraries supply a .min.js file.
-    libraries: [],
+    libraries: [
+      {
+        name: 'utilities',
+        minify: false,
+        sources: [
+          'vendor/lodash/dist/lodash.min.js',
+          'vendor/jquery/dist/jquery.min.js'
+        ]
+      },
+      {
+        name: 'angularBundle',
+        minify: true,
+        sources: [
+          'vendor/angular/angular.js',
+          'vendor/angular-mocks/angular-mocks.js',
+          'vendor/angular-ui-router/release/angular-ui-router.js',
+          'vendor/restangular/dist/restangular.js'
+        ]
+      }
+    ],
 
     // Define seperate bundles for your scripts in the assets folder. Works
     // in the same fashion as the libraries property above.
@@ -95,7 +114,15 @@ var config = {
     // in the assets folder in a single scripts.js file. If the array does
     // contain objects, it will only concatenate the files in the sources array
     // of each object.
-    bundles: [],
+    bundles: [
+      {
+        name: 'jsBundle',
+        sources: [
+          assetsSrc + '/js/example.js',
+          assetsSrc + '/js/example2.js'
+        ]
+      }
+    ],
 
     // Define extra stylesheets to be included in your css bundle. Usefull when
     // adding a plugin with it's own stylesheets or a 'library' like bootstrap.
@@ -108,7 +135,21 @@ var config = {
     // becomes 'index'.
     // IMPORTANT! You WILL need to define each seperate compiled stylesheet or js
     // bundle (including regular js, angular and external library bundles)
-    seperateBundlesPerPage: {},
+    seperateBundlesPerPage: {
+      use: true,
+      pages: [
+        {
+          names: ['index', 'simple-example'], // names of all the html pages to inject below bundles in
+          styleBundles: ['main'], // names of all stylesheets for these page
+          scriptBundles: ['utilities', 'jsBundle'] // names of all script bundles for these pages (including libraries!)
+        },
+        {
+          names: ['angular-example'],
+          styleBundles: ['main', 'todoApp'],
+          scriptBundles: ['angularBundle', 'utilities', 'app', 'exampleTodoApp', 'exampleTodoApp-tmpl']
+        }
+      ]
+    },
 
     // Choose which image to paint. 'Bazookas' or 'Gulpinator'. Leave empty to paint
     // nothing and be boring.

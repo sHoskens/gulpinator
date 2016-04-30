@@ -27,6 +27,8 @@ var compileJs = function(src, filename, dest, isAngular) {
     .pipe(gulpif(config.verbose, gulpPrint(function(filepath) {
       return 'running ' + taskName + ' on: ' + filepath;
     })))
+
+    // Linting and style checking
     .pipe(gulpif(config.jscs, jscs()))
     .pipe(gulpif(config.jscs, jscs.reporter()))
     .pipe(gulpif(config.jshint, jshint()))
@@ -35,6 +37,8 @@ var compileJs = function(src, filename, dest, isAngular) {
       jshint.reporter('jshint-stylish', { verbose: true }))
     )
     .pipe(gulpif(config.jshint, jshint.reporter('fail')))
+
+    // Compilation
     .pipe(gulpif(config.sourceMaps, sourcemaps.init({ loadMaps: true })))
       .pipe(gulpif(config.es6, babel()))
       .pipe(concat(filename))
@@ -42,7 +46,10 @@ var compileJs = function(src, filename, dest, isAngular) {
       .pipe(gulpif(config.minify, uglify()))
       .on('error', util.log)
     .pipe(gulpif(config.sourceMaps, sourcemaps.write('./')))
+
+    // Cache busting
     .pipe(gulpif(config.rev, rev()))
+
     .pipe(gulp.dest(dest + '/scripts'));
 };
 
