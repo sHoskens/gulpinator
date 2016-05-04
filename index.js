@@ -76,8 +76,8 @@ module.exports = function(gulp) {
   }
   else {
     buildTasks.push('bundle-libs');
+    buildTasks.push('compile-scripts');
     buildTasks.push('compile-sass');
-    buildTasks.push('compile-styles');
     buildTasks.push('move-html');
     if (config.angular.isAngularProject) {
       buildTasks.push('compile-angular-scripts');

@@ -8,6 +8,7 @@ var gulp          = require('gulp'),
     streamSeries  = require('stream-series'),
     File          = require('vinyl'),
     rev           = require('gulp-rev'),
+    lazypipe      = require('lazypipe'),
     config        = require('../utilities/getConfig').getConfig();
 
 // These transformer functions ere used when we want seperate bundles for each
@@ -19,6 +20,7 @@ var getFileNames = function(filepath, targetFile) {
   // injected, and the actuall file of the target. Alas, such is life.
 
   var fileNames = {};
+
   // Create a vinyl file object from targetFile to get it's basename
   fileNames.targetName = new File(targetFile).basename;
   fileNames.targetName = fileNames.targetName.replace('.html', '');
@@ -47,6 +49,7 @@ var checkIfFileMatches = function(fileNames, desiredBundles) {
       }
     }
   }
+
   return false;
 };
 
@@ -72,7 +75,7 @@ var styleBundleTransformer = function(filepath, file, index, length, targetFile)
 
 // The default transformer of gulp inject, used when seperate bundles are not
 // desired.
-var defaultTransformer = function() {
+var defaultTransformer = function(filepath, file, index, length, targetFile) {
   return inject.transform.apply(inject.transform, arguments);
 };
 
@@ -97,29 +100,49 @@ module.exports = {
       }
 
       var ignorePath = config.defaultDest + '/';
-      var injectStream = gulp.src(config.assetsSrc + '/**/*.html')
-        .pipe(gulpif(config.verbose, gulpPrint(function(filepath) {
+
+      var addInjectStreamPipe = function(injectStream, pipeContents) {
+        return injectStream.pipe(pipeContents);
+      };
+
+      var addPipeIfInUse = function(pipes, pipeContent, transformer) {
+        if (pipeContent && pipeContent._eventsCount && pipeContent._eventsCount > 0) {
+          pipes.push(inject(pipeContent, {
+            ignorePath: ignorePath,
+            transform: transformer
+          }));
+        }
+
+        return pipes;
+      };
+
+      var determineInjectStreamPipes = function() {
+        var pipes = [];
+
+        pipes.push(gulpif(config.verbose, gulpPrint(function(filepath) {
           return 'running inject-task on: ' + filepath;
-        })))
-        .pipe(inject(libsStream, {
-          name: 'libs',
-          ignorePath: ignorePath,
-          transform: scriptTransformer
-        }))
-        .pipe(gulpif(config.angular.isAngularProject, inject(angularStream, {
-          name: 'angular',
-          ignorePath: ignorePath,
-          transform: scriptTransformer
-        })))
-        .pipe(inject(stylesStream, {
-          ignorePath: ignorePath,
-          transform: styleTransformer
-        }))
-        .pipe(inject(scriptStream, {
-          ignorePath: ignorePath,
-          transform: scriptTransformer
-        }))
-        .pipe(gulp.dest(config.defaultDest));
+        })));
+
+        pipes = addPipeIfInUse(pipes, stylesStream, styleTransformer);
+        pipes = addPipeIfInUse(pipes, scriptStream, scriptTransformer);
+        pipes = addPipeIfInUse(pipes, libsStream, scriptTransformer);
+        pipes = addPipeIfInUse(pipes, angularStream, scriptTransformer);
+
+        pipes.push(gulp.dest(config.defaultDest));
+
+        return pipes;
+      };
+
+      var createInjectStream = function() {
+        var pipes = determineInjectStreamPipes();
+        var injectStream = gulp.src(config.assetsSrc + '/**/*.html');
+
+        for (var i = 0; i < pipes.length; i++) {
+          injectStream = addInjectStreamPipe(injectStream, pipes[i]);
+        }
+
+        return injectStream;
+      };
 
       // Create rev manifests if necessary
       if (config.rev) {
@@ -142,7 +165,7 @@ module.exports = {
         }
       }
 
-      return injectStream;
+      return createInjectStream();
     };
   }
 };
