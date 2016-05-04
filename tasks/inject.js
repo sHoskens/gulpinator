@@ -1,4 +1,5 @@
 var gulp          = require('gulp'),
+    gulpPrint     = require('gulp-print'),
     debug         = require('gulp-debug'),
     inject        = require('gulp-inject'),
     gulpif        = require('gulp-if'),
@@ -97,6 +98,9 @@ module.exports = {
 
       var ignorePath = config.defaultDest + '/';
       var injectStream = gulp.src(config.assetsSrc + '/**/*.html')
+        .pipe(gulpif(config.verbose, gulpPrint(function(filepath) {
+          return 'running inject-task on: ' + filepath;
+        })))
         .pipe(inject(libsStream, {
           name: 'libs',
           ignorePath: ignorePath,

@@ -1,4 +1,5 @@
 var gulp          = require('gulp'),
+    gulpPrint     = require('gulp-print'),
     sourcemaps    = require('gulp-sourcemaps'),
     sass          = require('gulp-sass'),
     autoprefixer  = require('gulp-autoprefixer'),
@@ -21,6 +22,9 @@ var compileCssStream = function() {
   }
 
   return gulp.src(cssPaths)
+    .pipe(gulpif(config.verbose, gulpPrint(function(filepath) {
+      return 'running css-task on: ' + filepath;
+    })))
     .pipe(sourcemaps.init({ loadMaps: true }))
       .pipe(sass())
       .pipe(autoprefixer('> 5%'))
