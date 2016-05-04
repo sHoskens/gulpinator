@@ -1,13 +1,12 @@
-var gulp        = require('gulp'),
-    cache       = require('gulp-cache'),
-    path        = require('path'),
-    painter     = require('./tasks/painter'),
-    config      = require('./utilities/getConfig').getConfig(),
-    getFolders  = require('./utilities/getFolders').getFolders,
-    del         = require('del'),
-    taskListing = require('gulp-task-listing');
+module.exports = function(gulp) {
+  var cache       = require('gulp-cache'),
+      path        = require('path'),
+      painter     = require('./tasks/painter'),
+      config      = require('./utilities/getConfig').getConfig(),
+      getFolders  = require('./utilities/getFolders').getFolders,
+      del         = require('del'),
+      taskListing = require('gulp-task-listing');
 
-function initGulp() {
   require('events').EventEmitter.prototype._maxListeners = 30;
 
   // Copies all the default files (listed in default array above) to the current working directory.
@@ -102,8 +101,4 @@ function initGulp() {
   gulp.task('help', taskListing);
 
   gulp.task('default', ['help']);
-}
-
-module.exports = {
-  initGulp: initGulp
 };

@@ -12,7 +12,7 @@ var exec            = require('child_process').exec,
 module.exports = {
   init: function init(cb) {
     var filesPath = '/{' + defaults.join(',') + '}';
-    exec('cp ../defaults' + filesPath + ' ' + activeDirectory + '/', function(err, stdout, stderr) {
+    exec('cp ' + activeDirectory + '/node_modules/gulpinator/defaults' + filesPath + ' ' + activeDirectory + '/', function(err, stdout, stderr) {
       console.log(stdout);
       console.log(stderr);
       cb(err);

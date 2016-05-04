@@ -30,7 +30,10 @@ Install using npm.
 
 Create a *gulpfile.js* in your project root, containing just this line:
 
-`require('gulpinator').initGulp();`
+```
+var gulp = require('gulp');
+require('gulpinator')(gulp);
+```
 
 Since this is a basic gulpfile, you can choose to add additional tasks here.
 
