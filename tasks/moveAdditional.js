@@ -4,8 +4,7 @@ var gulp          = require('gulp'),
     exporter      = require('../utilities/createExportsObject');
 
 var moveAdditionalFiles = function() {
-  return gulp.src(config.additionalFiles + '/**/*')
-    .pipe(rename({ dirname: '' }))
+  return gulp.src(config.additionalFiles + '/**/*', { base: config.additionalFiles + '/' })
     .pipe(gulp.dest(config.defaultDest));
 };
 
