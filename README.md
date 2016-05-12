@@ -183,7 +183,7 @@ It's possible to use automated injection of css files in our html templates. All
 ```
 <html>
 	<head>
-		<!-- inject:css -->
+		<!-- styles:css -->
   		<!-- compiled and cleaned stylesheets will be injected here -->
   		<!-- endinject -->
 	</head>
@@ -197,7 +197,7 @@ It's possible to use automated injection of css files in our html templates. All
 	<!-- inject compiled angular module(s) here -->
 	<!-- endinject -->
 
-	<!-- inject:js -->
+	<!-- scripts:js -->
 	<!-- compiled, bundled and minified scripts will be injected here -->
 	<!-- endinject -->
 	</body>
