@@ -55,7 +55,7 @@ var checkIfFileMatches = function(fileNames, desiredBundles) {
 
 var scriptBundleTransformer = function(filepath, file, index, length, targetFile) {
   var fileNames = getFileNames(filepath, targetFile);
-
+  console.log('FILEPATH: ', filepath);
   fileNames.fileName = fileNames.fileName.replace('.js', '');
 
   if (checkIfFileMatches(fileNames, 'scriptBundles')) {
@@ -101,16 +101,13 @@ module.exports = {
 
       var ignorePath = config.defaultDest + '/';
 
-      var addInjectStreamPipe = function(injectStream, pipeContents) {
-        return injectStream.pipe(pipeContents);
-      };
-
-      var addPipeIfInUse = function(pipes, pipeContent, transformer) {
+      var addPipeIfInUse = function(pipes, pipeContent, transformer, name) {
         if (pipeContent && pipeContent._eventsCount && pipeContent._eventsCount > 0) {
-          pipes.push(inject(pipeContent, {
-            ignorePath: ignorePath,
-            transform: transformer
-          }));
+          pipes.push([
+            inject,
+            pipeContent,
+            { ignorePath: ignorePath, transform: transformer, name: name }
+          ]);
         }
 
         return pipes;
@@ -119,29 +116,38 @@ module.exports = {
       var determineInjectStreamPipes = function() {
         var pipes = [];
 
-        pipes.push(gulpif(config.verbose, gulpPrint(function(filepath) {
-          return 'running inject-task on: ' + filepath;
-        })));
+        pipes.push([function() {
+          return gulpif(config.verbose, gulpPrint(function(filepath) {
+            return 'running inject-task on: ' + filepath;
+          }));
+        }]);
 
-        pipes = addPipeIfInUse(pipes, stylesStream, styleTransformer);
-        pipes = addPipeIfInUse(pipes, scriptStream, scriptTransformer);
-        pipes = addPipeIfInUse(pipes, libsStream, scriptTransformer);
-        pipes = addPipeIfInUse(pipes, angularStream, scriptTransformer);
-
-        pipes.push(gulp.dest(config.defaultDest));
+        pipes = addPipeIfInUse(pipes, stylesStream, styleTransformer, 'styles');
+        pipes = addPipeIfInUse(pipes, scriptStream, scriptTransformer, 'scripts');
+        pipes = addPipeIfInUse(pipes, libsStream, scriptTransformer, 'libs');
+        pipes = addPipeIfInUse(pipes, angularStream, scriptTransformer, 'angular');
 
         return pipes;
       };
 
+      var addPipeToStream = function(stream, pipeArguments) {
+        // Since we're using lazyPipe, we can't just add the pipe. We need to add
+        // the function, optionally followed by it's arguments, without calling it.
+        stream = (stream) ? stream : lazypipe();
+        return stream.pipe.apply(null, pipeArguments);
+      };
+
       var createInjectStream = function() {
-        var pipes = determineInjectStreamPipes();
-        var injectStream = gulp.src(config.assetsSrc + '/**/*.html');
+        var pipes = determineInjectStreamPipes(),
+            injectStream;
 
         for (var i = 0; i < pipes.length; i++) {
-          injectStream = addInjectStreamPipe(injectStream, pipes[i]);
+          injectStream = addPipeToStream(injectStream, pipes[i]);
         }
 
-        return injectStream;
+        return gulp.src(config.assetsSrc + '/**/*.html')
+          .pipe(injectStream())
+          .pipe(gulp.dest(config.defaultDest));
       };
 
       // Create rev manifests if necessary

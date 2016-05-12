@@ -66,6 +66,10 @@ module.exports = function(gulp) {
     );
   });
 
+  gulp.task('destroy', function() {
+    del.sync([config.defaultDest + '/**/*.*']);
+  });
+
   var buildTasks = [];
 
   buildTasks.push('optimize-images');
