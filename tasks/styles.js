@@ -26,9 +26,11 @@ var compileCssStream = function() {
       return 'running css-task on: ' + filepath;
     })))
     .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(sass())
+      .pipe(sass({
+        includePaths: config.sass.includePaths
+      }))
       .pipe(autoprefixer('> 5%'))
-      .pipe(cleanCSS({compatibility: 'ie9'}))
+      .pipe(cleanCSS({ compatibility: 'ie9' }))
     .pipe(sourcemaps.write('./'))
     .pipe(gulpif(config.rev, rev()))
 

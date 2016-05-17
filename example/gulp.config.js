@@ -20,6 +20,13 @@ var config = {
       optimize: true
     },
 
+    // Sass configuration
+    sass: {
+      includePaths: [
+        'vendor/compass-breakpoint/stylesheets'
+      ]// Define additional paths Compass can use to compile your sass stylesheets.
+    },
+
     // The desired build folder. After running'gulp build', this folder should
     // contain all the compiled code and files according to the specifications
     // defined below.
