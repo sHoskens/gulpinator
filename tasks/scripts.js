@@ -15,7 +15,7 @@ var compileScripts = function() {
     return eventStream.merge(streams);
   }
   else {
-    return compileJs(config.assetsSrc + '/js/**/*.js', 'scripts.js', config.defaultDest, false);
+    return compileJs(config.scriptSrc + '/**/*.js', 'scripts.js', config.defaultDest, false);
   }
 };
 

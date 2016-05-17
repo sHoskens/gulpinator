@@ -1,6 +1,6 @@
 {
   "name": "gulpinator",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A simple, flexible gulp workflow, for personal use",
   "main": "index.js",
   "scripts": {

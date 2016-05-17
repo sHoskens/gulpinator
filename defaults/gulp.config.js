@@ -8,6 +8,18 @@ var config = {
     // It's defined in above variable for reuse throughout this config.
     assetsSrc: assetsSrc,
 
+    // Where you keep your uncompiled stylesheets (sass)
+    stylesSrc: assetsSrc + '/styles',
+
+    // Where you keep your uncompiled javascript files
+    scriptSrc: assetsSrc + '/js',
+
+    // Define where you keep your unoptimized images, and wether they should be optimized (or simply moved)
+    images: {
+      src: assetsSrc + '/img',
+      optimize: true
+    },
+
     // The desired build folder. After running'gulp build', this folder should
     // contain all the compiled code and files according to the specifications
     // defined below.
