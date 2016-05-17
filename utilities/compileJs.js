@@ -50,7 +50,7 @@ var compileJs = function(src, filename, dest, isAngular) {
     // Cache busting
     .pipe(gulpif(config.rev, rev()))
 
-    .pipe(gulp.dest(dest + '/scripts'));
+    .pipe(gulp.dest(dest));
 };
 
 module.exports = compileJs;

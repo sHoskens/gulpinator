@@ -7,7 +7,7 @@ var gulp      = require('gulp'),
 var optimize = function() {
   return gulp.src(config.images.src + '/**')
     .pipe(gulpif(config.images.optimize, imagemin({ progressive: true })))
-    .pipe(gulp.dest(config.defaultDest + '/img'));
+    .pipe(gulp.dest(config.defaultDest + '/' + config.dest.images));
 };
 
 module.exports = exporter(optimize);

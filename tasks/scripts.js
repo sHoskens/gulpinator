@@ -9,13 +9,13 @@ var compileScripts = function() {
   if (config.bundles.length > 0) {
     for (var i = 0; i < config.bundles.length; i++) {
       var bundle = config.bundles[i];
-      streams.push(compileJs(bundle.sources, bundle.name + '.js', config.defaultDest, false));
+      streams.push(compileJs(bundle.sources, bundle.name + '.js', config.defaultDest + '/' + config.dest.scripts, false));
     }
 
     return eventStream.merge(streams);
   }
   else {
-    return compileJs(config.scriptSrc + '/**/*.js', 'scripts.js', config.defaultDest, false);
+    return compileJs(config.scriptSrc + '/**/*.js', 'scripts.js', config.defaultDest + '/' + config.dest.scripts, false);
   }
 };
 

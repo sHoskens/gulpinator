@@ -30,7 +30,7 @@ var compileAngularScripts = function() {
       srcArray.push(path.join(config.angular.angularSrc, folders[i], '*.js'));
     }
 
-    streams.push(compileJs(srcArray, config.angular.appName + '.js', config.defaultDest, true));
+    streams.push(compileJs(srcArray, config.angular.appName + '.js', config.defaultDest + '/' + config.dest.angular, true));
   }
   else {
     // Make a seperate stream for each angular module.
@@ -39,7 +39,7 @@ var compileAngularScripts = function() {
         config.angular.angularSrc + '/' + config.angular.appName + '.js',
         config.angular.angularSrc + '/common/**/*.js'],
         config.angular.appName + '.js',
-        config.defaultDest,
+        config.defaultDest + '/' + config.dest.angular,
         true
       );
 
@@ -54,7 +54,7 @@ var compileAngularScripts = function() {
       streams.push(compileJs(
         path.join(config.angular.angularSrc, 'modules', folder, '**', '*.js'),
         folder + '.js',
-        config.defaultDest,
+        config.defaultDest + '/' + config.dest.angular,
         true
       ));
     });

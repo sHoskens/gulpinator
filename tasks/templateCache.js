@@ -31,10 +31,10 @@ var compileTemplateCache = function() {
       .pipe(angularTemplatecache(moduleName, {
         module: moduleName,
         root: 'templates'
-    }))
+      }))
       .pipe(concat(moduleName + '-tmpl.js'))
       .pipe(gulpif(config.rev, rev()))
-      .pipe(gulp.dest(config.defaultDest + '/templates'));
+      .pipe(gulp.dest(config.defaultDest + '/' + config.dest.angularTemplates));
   }
 
   var streams = [];

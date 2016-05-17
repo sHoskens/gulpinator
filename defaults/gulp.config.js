@@ -32,6 +32,15 @@ var config = {
     // defined below.
     defaultDest: 'public',
 
+    // Specific destination folder names
+    dest: {
+      scripts: 'scripts',
+      styles: 'styles',
+      images: 'img',
+      angular: 'scripts',
+      angularTemplates: 'templates'
+    },
+
     // The entire folder/file structure in the folder defined below will simply
     // be copied into the defaultDest folder. Note that these folders will be
     // added to the defaultDest without the root additionalFiles folder defined

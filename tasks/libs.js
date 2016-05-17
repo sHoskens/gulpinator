@@ -29,7 +29,7 @@ var compileLibs = function() {
     var bundle = config.libraries[i],
         stream = compileJsLibs(
           bundle.sources, bundle.name + '.js',
-          config.defaultDest,
+          config.defaultDest + '/' + config.dest.scripts,
           bundle.minify
         );
 

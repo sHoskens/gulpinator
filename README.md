@@ -71,7 +71,15 @@ Gulpinator uses a basic .js configuration file. (I've chosen for .js over .json 
 All default options (for a `gulp build` or `gulp serve` without environment argument) are found as properties of the *default* object in the config.
 
 * **assetsSrc**: (Path) The folder containing all your html, css, styles, images, fonts,...
+* **stylesSrc**: (Path) Added to **assetsSrc**, this path will contain your stylesheets.
+* **scriptSrc**: (Path) Added to **assetsSrc**, this path will contain your scripts.
+* **images**: (Object) This object contains configuration for the image optimisation step.
+	* **src**: (Path) Added to **assetsSrc**, this path will contain your images.
+	* **optimize**: (Boolean) Wether to optimize your images.
+* **sass**: (Object) Further configuration for sass compilation
+	* **includePaths**: (Array) the paths of additional folders in which the sass task should look for imports.
 * **defaultDest**: (Path) The desired build folder. After running'gulp build', this folder should contain all the compiled code and files according to the specifications defined below, once you've run the `gulp build` command.
+* **dest**: (Object) Specific destination folder names. Contains the follow key - path pairs: *scripts, styles, images, angular, angularTemplates*. I assume these are self-explanatory.
 * **additionalFiles**: (Path) The entire folder/file structure in the folder defined below will simply be copied into the defaultDest folder. Note that these folders will be added to the defaultDest without the root additionalFiles folder.
 * **angular**: (Object) This object contains the configuration options if yoe are building an angular project.
 	* **isAngularProject**: (Boolean) Set this boolean to false if you're not making an angular project. All below properties of the angular object will be ignored if set to false.
