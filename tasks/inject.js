@@ -55,7 +55,7 @@ var checkIfFileMatches = function(fileNames, desiredBundles) {
 
 var scriptBundleTransformer = function(filepath, file, index, length, targetFile) {
   var fileNames = getFileNames(filepath, targetFile);
-  console.log('FILEPATH: ', filepath);
+
   fileNames.fileName = fileNames.fileName.replace('.js', '');
 
   if (checkIfFileMatches(fileNames, 'scriptBundles')) {
@@ -139,37 +139,27 @@ module.exports = {
 
       var createInjectStream = function() {
         var pipes = determineInjectStreamPipes(),
+            injectSrc,
+            injectDest,
             injectStream;
+
+        if (config.symfony.isSymfonyProject) {
+          injectSrc = config.symfony.injectFilesSrc + '/*.html.twig';
+          injectDest = config.symfony.injectTarget;
+        }
+        else {
+          injectSrc = config.assetsSrc + '/**/*.html';
+          injectDest = config.defaultDest;
+        }
 
         for (var i = 0; i < pipes.length; i++) {
           injectStream = addPipeToStream(injectStream, pipes[i]);
         }
 
-        return gulp.src(config.assetsSrc + '/**/*.html')
+        return gulp.src(injectSrc)
           .pipe(injectStream())
-          .pipe(gulp.dest(config.defaultDest));
+          .pipe(gulp.dest(injectDest));
       };
-
-      // Create rev manifests if necessary
-      if (config.rev) {
-        scriptStream
-          .pipe(rev.manifest({ path:'rev-manifest-scripts.json', merge: false }))
-          .pipe(gulp.dest(config.defaultDest));
-
-        libsStream
-          .pipe(rev.manifest({ path:'rev-manifest-libs.json', merge: false }))
-          .pipe(gulp.dest(config.defaultDest));
-
-        stylesStream
-          .pipe(rev.manifest({ path:'rev-manifest-styles.json', merge: false }))
-          .pipe(gulp.dest(config.defaultDest));
-
-        if (config.angular.isAngularProject) {
-          angularStream
-            .pipe(rev.manifest({ path:'rev-manifest-ng.json', merge: false }))
-            .pipe(gulp.dest(config.defaultDest));
-        }
-      }
 
       return createInjectStream();
     };

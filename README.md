@@ -100,6 +100,10 @@ All default options (for a `gulp build` or `gulp serve` without environment argu
 	* **proxyTarget**: (Integer) The port of the original server. In the above example, this would be 3000.
 	* **websockets**: (Boolean) Set to true to allow websockets support with browsersync.
 	* **debug**: (Boolean) Verbose version of browsersync.
+* **symfony**: (Object) Configuration options for when using with our PHP cms (based on Kunstmaan cms)
+	* **isSymfonyProject**: (Boolean) Wether we are actually using the symfony php cms.
+	* **injectFilesSrc**: (String) Path to the Gulp-inject folder, containing the twig templates with the necessary comments for injection.
+	* **injectTarget**: (String) target for the Gulp-inject templates, after injection.
 * **libraries**: (Array) Define seperate bundles for your libraries. There are three main options for including libraries in this workflow.
 	1. Add libraries through a CDN or external link, directly into the HTML In this case, just supply an empty array to the libraries property
 	2. Create one large library bundle, concatenating all it's files and automatically injecting the resulting bundle into the HTML.
@@ -212,6 +216,12 @@ It's possible to use automated injection of css files in our html templates. All
 </html>
 ```
 
+###4.6. Usage with Bazookas CMS
+To integrate gulpinator in the Symfony based CMS currently used by our team, most configuration will stay the same. Simply set symfony.isSymfonyProject to true, and point the Src and Target strings to the correct destinations.
+
+The injectFilesSrc target is a folder 'Gulp-inject', containing seperate twig templates for the css and js of the project. These templates only contain the injection comments used by gulp-inject. After injection, these twig templates will be placed in a different folder (targeted by symfony.injectTarget) where they will be available for including in your layout's <head> and bottom of the <body>, for the css and js respectively.
+
+To use Browsersync with the CMS, set the browsersync.isProxy option to true, and set browsersync.proxyTarget to 'localhost:8000'. (or whatever port you have your symfony project running on)
 
 ##5. Work in progress: Wishlist
 
@@ -229,10 +239,6 @@ I need to add more support for unit testing, but haven't yet decided on the best
 for this. Once I've tested and decided on a technology stack for unit and/or integration
 tests, I'll start automating it in here.
 
-###CMS integration
-Currently, Gulpinator has just been tested for stand-alone, small web application. I'd like
-to check out what's necessary to integrate it seemlessly in the CMS' currently used by
-my team. (Kunstmaan CMS and Sails.js)
 
 ###Add HTML templating support
 Add support for several HTML templating preprocessors, like Jade, Mustache, Handlebars,...

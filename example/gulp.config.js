@@ -105,6 +105,14 @@ var config = {
       debug: true
     },
 
+    // Use these configuration options only when building a symfony project in our current
+    // CMS (based on Kunstmaan's CMS structure)
+    symfony: {
+      isSymfonyProject: false,
+      injectFilesSrc: assetsSrc + '/views/Gulp-inject',
+      injectTarget: assetsSrc + '/views/Partials'
+    },
+
     // Define seperate bundles for your libraries.
     // There are three main options for including libraries in this workflow.
     // 1. Add libraries through a CDN or external link, directly into the HTML
