@@ -21,7 +21,7 @@ var compileLibs = function() {
       .pipe(concat(filename))
       .pipe(gulpif(minify, uglify()))
       .pipe(gulpif(config.rev, rev()))
-      .pipe(gulp.dest(dest + '/scripts'));
+      .pipe(gulp.dest(dest));
   }
 
   // For every item in the config.libraries array, create a bundled js file in the dist folder

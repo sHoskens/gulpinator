@@ -14,12 +14,14 @@ var gulp          = require('gulp'),
 
 var compileCssStream = function() {
   // Add extra stylesheets
-  var cssPaths = [config.stylesSrc + '/**/*.scss'];
+  var cssPaths = [];
   if (config.extraStylesheets) {
     for (var j = 0; j < config.extraStylesheets.length; j++) {
       cssPaths.push(config.extraStylesheets[j]);
     }
   }
+
+  cssPaths.push(config.stylesSrc + '/**/*.scss');
 
   return gulp.src(cssPaths)
     .pipe(gulpif(config.verbose, gulpPrint(function(filepath) {
