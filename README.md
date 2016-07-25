@@ -104,13 +104,13 @@ All default options (for a `gulp build` or `gulp serve` without environment argu
 	* **isSymfonyProject**: (Boolean) Wether we are actually using the symfony php cms.
 	* **injectFilesSrc**: (String) Path to the Gulp-inject folder, containing the twig templates with the necessary comments for injection.
 	* **injectTarget**: (String) target for the Gulp-inject templates, after injection.
-* **bundles**: (Array) Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the **scriptSrc** folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc... Each object in this array consists of these propertties:
+* **bundles**: (Array) Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the **scriptSrc** folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc... Each object in this array consists of these properties:
 	* **name**: The name of the desired output file. NOTE: you will use this name in the comment inject notation in HTML!
-	**minify**: Wether to minify these files using uglify
-	**es6**: Wether to run these files through babel's es6 compilation
-	**lint**: Wether to lint these files with jslint and jscs.
-	**isAngular**: Wether to run angular specific tasks on these files
-	**sources**: An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
+	* **minify**: Wether to minify these files using uglify
+	* **es6**: Wether to run these files through babel's es6 compilation
+	* **lint**: Wether to lint these files with jslint and jscs.
+	* **isAngular**: Wether to run angular specific tasks on these files
+	* **sources**: An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
 * **extraStylesheets**: (Path) Define extra stylesheets you want included in *main.css*. Also possible with sass, but I've put this here so all build configuration stays in one file.
 * **paint**: (String) Choose which image to paint. 'Bazookas' or 'Gulpinator'. Leave empty to paint nothing and be boring.
 

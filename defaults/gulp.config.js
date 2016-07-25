@@ -111,38 +111,20 @@ var config = {
       injectTarget: assetsSrc + '/views/Partials'
     },
 
-    // Define seperate bundles for your libraries.
-    // There are three main options for including libraries in this workflow.
-    // 1. Add libraries through a CDN or external link, directly into the HTML
-    //    In this case, just supply an empty array to the libraries property
-    // 2. Create one large library bundle, concatenating all it's files and
-    //    automatically injecting the resulting bundle into the HTML.
-    // 3. Create multiple library bundles, injecting them into the HTML where
-    //    desired. See scriptsPerPage property below for more details.
-    // Note that with options 2 and 3 we can do our own minification, which
-    // might be handy if not all of the chosen libraries supply a .min.js file.
-    libraries: [],
-
-    // Define seperate bundles for your scripts in the assets folder. Works
-    // in the same fashion as the libraries property above.
-    // If empty, the gulp process wil default to concatenating all scripts found
-    // in the assets folder in a single scripts.js file. If the array does
-    // contain objects, it will only concatenate the files in the sources array
-    // of each object.
+    // Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the scriptSrc
+    //folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc...
+    //Each object in this array consists of these properties
+    // - name: The name of the desired output file. NOTE: you will use this name in the comment inject notation in HTML!
+    // - minify: Wether to minify these files using uglify
+    // - es6: Wether to run these files through babel's es6 compilation
+    // - lint: Wether to lint these files with jslint and jscs.
+    // - isAngular: Wether to run angular specific tasks on these files
+    // - sources: An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
     bundles: [],
 
     // Define extra stylesheets to be included in your css bundle. Usefull when
     // adding a plugin with it's own stylesheets or a 'library' like bootstrap.
     extraStylesheets: [],
-
-    // If you want to add seperate script bundles to seperate html pages but still
-    // want to use automated injection, you can define an array of all desired bundles
-    // with an array of the pages they should be in. Don't supply the full path for
-    // these files, just the name without the suffix. So assets/index.html simply
-    // becomes 'index'.
-    // IMPORTANT! You WILL need to define each seperate compiled stylesheet or js
-    // bundle (including regular js, angular and external library bundles)
-    seperateBundlesPerPage: {},
 
     // Choose which image to paint. 'Bazookas' or 'Gulpinator'. Leave empty to paint
     // nothing and be boring.
