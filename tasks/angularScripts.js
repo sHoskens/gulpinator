@@ -7,6 +7,13 @@ var gulp        = require('gulp'),
     config      = require('../utilities/getConfig').getConfig(),
     exporter    = require('../utilities/createExportsObject');
 
+var angularOptions = {
+  isAngular: true,
+  minify: config.minify,
+  lint: config.jshint,
+  es6: config.es6
+};
+
 var compileAngularScripts = function() {
   // The streams variable will contain all the seperate gulp javascript
   // streams this task will produce. (i.e. seperate streams for each angular
@@ -30,7 +37,7 @@ var compileAngularScripts = function() {
       srcArray.push(path.join(config.angular.angularSrc, folders[i], '*.js'));
     }
 
-    streams.push(compileJs(srcArray, config.angular.appName + '.js', config.defaultDest + '/' + config.dest.angular, true));
+    streams.push(compileJs(srcArray, config.angular.appName + '.js', config.defaultDest + '/' + config.dest.angular, angularOptions));
   }
   else {
     // Make a seperate stream for each angular module.
@@ -40,7 +47,7 @@ var compileAngularScripts = function() {
         config.angular.angularSrc + '/common/**/*.js'],
         config.angular.appName + '.js',
         config.defaultDest + '/' + config.dest.angular,
-        true
+        angularOptions
       );
 
     streams.push(mainAngularAppStream);
@@ -55,7 +62,7 @@ var compileAngularScripts = function() {
         path.join(config.angular.angularSrc, 'modules', folder, '**', '*.js'),
         folder + '.js',
         config.defaultDest + '/' + config.dest.angular,
-        true
+        angularOptions
       ));
     });
   }

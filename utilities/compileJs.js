@@ -17,11 +17,15 @@ var gulp        = require('gulp'),
 // src: the path to the javascript file(s). Optionally a glob pattern
 // filename: the name of the concatenated, optionally minified output file
 // dest: the destination path of the output file
-// isAngular: wether these js files are angular (for ngAnnotate)
+// options: Wether it's an angular file, it should be minified, or it should be linted.
 // Additional options, such as wether to lint or check code style,
 // are supplied with the gulp.config.json file.
-var compileJs = function(src, filename, dest, isAngular) {
+var compileJs = function(src, filename, dest, options) {
   var taskName = isAngular ? 'ng-task' : 'js-task';
+  var isAngular = options.isAngular;
+  var lint = options.lint;
+  var minify = options.minify;
+  var es6 = options.es6;
 
   return gulp.src(src)
     .pipe(gulpif(config.verbose, gulpPrint(function(filepath) {
@@ -29,21 +33,21 @@ var compileJs = function(src, filename, dest, isAngular) {
     })))
 
     // Linting and style checking
-    .pipe(gulpif(config.jscs, jscs()))
-    .pipe(gulpif(config.jscs, jscs.reporter()))
-    .pipe(gulpif(config.jshint, jshint()))
+    .pipe(gulpif(lint, jscs()))
+    .pipe(gulpif(lint, jscs.reporter()))
+    .pipe(gulpif(lint, jshint()))
     .pipe(gulpif(
-      config.jshint,
+      lint,
       jshint.reporter('jshint-stylish', { verbose: true }))
     )
-    .pipe(gulpif(config.jshint, jshint.reporter('fail')))
+    .pipe(gulpif(lint, jshint.reporter('fail')))
 
     // Compilation
     .pipe(gulpif(config.sourceMaps, sourcemaps.init({ loadMaps: true })))
-      .pipe(gulpif(config.es6, babel()))
+      .pipe(gulpif(es6, babel()))
       .pipe(concat(filename))
       .pipe(gulpif(isAngular, ngAnnotate()))
-      .pipe(gulpif(config.minify, uglify()))
+      .pipe(gulpif(minify, uglify()))
       .on('error', util.log)
     .pipe(gulpif(config.sourceMaps, sourcemaps.write('./')))
 

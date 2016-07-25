@@ -1,3 +1,9 @@
+// Begone from here!
+// Honestly, don't mess with this file, it has arcane and mysterious ways. I barely
+// understand what's going on myself.
+// If you have injections problems or bugs, you'd be better of writing your own custom
+// injection task in gulpfile.js.
+
 var gulp          = require('gulp'),
     gulpPrint     = require('gulp-print'),
     debug         = require('gulp-debug'),
@@ -89,7 +95,7 @@ module.exports = {
 
       var scriptStream = require('./scripts').getStream();
 
-      var libsStream = require('./libs').getStream();
+      var bundleStreams = require('./bundles').getSeperateStreams();
 
       var angularStream;
       if (config.angular.isAngularProject) {
@@ -124,8 +130,11 @@ module.exports = {
 
         pipes = addPipeIfInUse(pipes, stylesStream, styleTransformer, 'styles');
         pipes = addPipeIfInUse(pipes, scriptStream, scriptTransformer, 'scripts');
-        pipes = addPipeIfInUse(pipes, libsStream, scriptTransformer, 'libs');
         pipes = addPipeIfInUse(pipes, angularStream, scriptTransformer, 'angular');
+
+        for (var i = 0; i < bundleStreams.length; i++) {
+          pipes = addPipeIfInUse(pipes, bundleStreams[i].stream, scriptTransformer, bundleStreams[i].name);
+        }
 
         return pipes;
       };

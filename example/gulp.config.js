@@ -63,7 +63,7 @@ var config = {
 
     // Booleans indicating desired gulp functionality
     // Activate es6 mode with babel. Configure in .babelrc file
-    es6: true,
+    es6: false,
 
     // Add hashes to each asset, to allow cache busting
     // Note: you will not be able to inject css with browsersync using this method
@@ -113,17 +113,19 @@ var config = {
       injectTarget: assetsSrc + '/views/Partials'
     },
 
-    // Define seperate bundles for your libraries.
-    // There are three main options for including libraries in this workflow.
-    // 1. Add libraries through a CDN or external link, directly into the HTML
-    //    In this case, just supply an empty array to the libraries property
-    // 2. Create one large library bundle, concatenating all it's files and
+    // Define seperate bundles for your scripts.
+    // There are three main options for including scripts in this workflow.
+    // 1. Add external scripts through a CDN or external link, directly into the HTML
+    //    In this case, just supply an empty array to the bundles property. All your
+    //    custom scripts will then be automatically bundles (everything in the
+    //    scriptSrc location)
+    // 2. Create one large script bundle, concatenating all it's files and
     //    automatically injecting the resulting bundle into the HTML.
-    // 3. Create multiple library bundles, injecting them into the HTML where
-    //    desired. See scriptsPerPage property below for more details.
+    // 3. Create multiple script bundles, injecting them into the HTML where
+    //    desired. The name of the bundle
     // Note that with options 2 and 3 we can do our own minification, which
     // might be handy if not all of the chosen libraries supply a .min.js file.
-    libraries: [
+    bundles: [
       {
         name: 'utilities',
         minify: false,
@@ -141,21 +143,12 @@ var config = {
           'vendor/angular-ui-router/release/angular-ui-router.js',
           'vendor/restangular/dist/restangular.js'
         ]
-      }
-    ],
-
-    // Define seperate bundles for your scripts in the assets folder. Works
-    // in the same fashion as the libraries property above.
-    // If empty, the gulp process wil default to concatenating all scripts found
-    // in the assets folder in a single scripts.js file. If the array does
-    // contain objects, it will only concatenate the files in the sources array
-    // of each object.
-    bundles: [
+      },
       {
-        name: 'jsBundle',
+        name: 'scripts',
+        minify: true,
         sources: [
-          assetsSrc + '/js/example.js',
-          assetsSrc + '/js/example2.js'
+          scriptSrc + '/**/*.js'
         ]
       }
     ],
@@ -172,7 +165,7 @@ var config = {
     // IMPORTANT! You WILL need to define each seperate compiled stylesheet or js
     // bundle (including regular js, angular and external library bundles)
     seperateBundlesPerPage: {
-      use: true,
+      use: false,
       pages: [
         {
           names: ['index', 'simple-example'], // names of all the html pages to inject below bundles in
