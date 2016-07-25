@@ -9,6 +9,15 @@ module.exports = function(gulp) {
 
   require('events').EventEmitter.prototype._maxListeners = 30;
 
+  // Make sure all bundles have at least default options
+  // for (var i = 0; i < config.bundles.length; i++) {
+  //   var bundle = config.bundles[i];
+  //   bundle.isAngular = bundle.isAngular ? bundle.isAngular : false;
+  //   bundle.minify = bundle.minify ? bundle.minify : false;
+  //   bundle.lint = bundle.lint ? bundle.lint : false;
+  //   bundle.es6 = bundle.es6 ? bundle.es6 : false;
+  // }
+
   // Copies all the default files (listed in default array above) to the current working directory.
   gulp.task('init', require('./tasks/init').init);
 
@@ -30,7 +39,7 @@ module.exports = function(gulp) {
   }
 
   // Bundles all chosen library files
-  gulp.task('bundle-libs', require('./tasks/libs').getTask());
+  gulp.task('bundle-scripts', require('./tasks/bundles').getTask());
 
   // TODO move fonts, and check for possible extra font tasks
 
@@ -79,7 +88,7 @@ module.exports = function(gulp) {
     buildTasks.push('build-inject');
   }
   else {
-    buildTasks.push('bundle-libs');
+    buildTasks.push('bundle-scripts');
     buildTasks.push('compile-scripts');
     buildTasks.push('compile-sass');
     buildTasks.push('move-html');
