@@ -63,7 +63,7 @@ var config = {
 
     // Booleans indicating desired gulp functionality
     // Activate es6 mode with babel. Configure in .babelrc file
-    es6: false,
+    es6: true,
 
     // Add hashes to each asset, to allow cache busting
     // Note: you will not be able to inject css with browsersync using this method
@@ -147,8 +147,10 @@ var config = {
       {
         name: 'scripts',
         minify: true,
+        es6: true,
+        lint: true,
         sources: [
-          scriptSrc + '/**/*.js'
+          assetsSrc + '/js/**/*.js'
         ]
       }
     ],
@@ -156,29 +158,6 @@ var config = {
     // Define extra stylesheets to be included in your css bundle. Usefull when
     // adding a plugin with it's own stylesheets or a 'library' like bootstrap.
     extraStylesheets: [],
-
-    // If you want to add seperate script bundles to seperate html pages but still
-    // want to use automated injection, you can define an array of all desired bundles
-    // with an array of the pages they should be in. Don't supply the full path for
-    // these files, just the name without the suffix. So assets/index.html simply
-    // becomes 'index'.
-    // IMPORTANT! You WILL need to define each seperate compiled stylesheet or js
-    // bundle (including regular js, angular and external library bundles)
-    seperateBundlesPerPage: {
-      use: false,
-      pages: [
-        {
-          names: ['index', 'simple-example'], // names of all the html pages to inject below bundles in
-          styleBundles: ['main'], // names of all stylesheets for these page
-          scriptBundles: ['utilities', 'jsBundle'] // names of all script bundles for these pages (including libraries!)
-        },
-        {
-          names: ['angular-example'],
-          styleBundles: ['main', 'todoApp'],
-          scriptBundles: ['angularBundle', 'utilities', 'app', 'exampleTodoApp', 'exampleTodoApp-tmpl']
-        }
-      ]
-    },
 
     // Choose which image to paint. 'Bazookas' or 'Gulpinator'. Leave empty to paint
     // nothing and be boring.

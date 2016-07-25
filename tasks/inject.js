@@ -17,68 +17,6 @@ var gulp          = require('gulp'),
     lazypipe      = require('lazypipe'),
     config        = require('../utilities/getConfig').getConfig();
 
-// These transformer functions ere used when we want seperate bundles for each
-// html file. See the config file or README.md for more information.
-// It checks if the file matches the desired bundles in the target file's
-// page object in config.seperateBundlesPerPage.pages.
-var getFileNames = function(filepath, targetFile) {
-  // The inject transformer function gives us the filepath of the file to be
-  // injected, and the actuall file of the target. Alas, such is life.
-
-  var fileNames = {};
-
-  // Create a vinyl file object from targetFile to get it's basename
-  fileNames.targetName = new File(targetFile).basename;
-  fileNames.targetName = fileNames.targetName.replace('.html', '');
-
-  fileNames.fileName = filepath.substring(filepath.lastIndexOf('/') + 1);
-  if (config.rev) {
-    fileNames.fileName = fileNames.fileName.substring(0, fileNames.fileName.lastIndexOf('-'));
-  }
-
-  return fileNames;
-};
-
-// Searches for the given target file in the pages array. If it exists,
-// checks this target's desired sources and wether the file to be injected
-// matches a filename from these sources.
-var checkIfFileMatches = function(fileNames, desiredBundles) {
-  for (var i = 0; i < config.seperateBundlesPerPage.pages.length; i++) {
-    var page = config.seperateBundlesPerPage.pages[i];
-    if (page.names.indexOf(fileNames.targetName) > -1) {
-      var desiredBundle = page[desiredBundles];
-      if (desiredBundle.indexOf(fileNames.fileName) > -1) {
-        return true;
-      }
-      else {
-        i = config.seperateBundlesPerPage.pages; // stop loop
-      }
-    }
-  }
-
-  return false;
-};
-
-var scriptBundleTransformer = function(filepath, file, index, length, targetFile) {
-  var fileNames = getFileNames(filepath, targetFile);
-
-  fileNames.fileName = fileNames.fileName.replace('.js', '');
-
-  if (checkIfFileMatches(fileNames, 'scriptBundles')) {
-    return inject.transform.apply(inject.transform, arguments);
-  }
-};
-
-var styleBundleTransformer = function(filepath, file, index, length, targetFile) {
-  var fileNames = getFileNames(filepath, targetFile);
-
-  fileNames.fileName = fileNames.fileName.replace('.css', '');
-
-  if (checkIfFileMatches(fileNames, 'styleBundles')) {
-    return inject.transform.apply(inject.transform, arguments);
-  }
-};
-
 // The default transformer of gulp inject, used when seperate bundles are not
 // desired.
 var defaultTransformer = function(filepath, file, index, length, targetFile) {
@@ -88,14 +26,9 @@ var defaultTransformer = function(filepath, file, index, length, targetFile) {
 module.exports = {
   injectStylesAndScripts: function() {
     return function() {
-      var scriptTransformer = (config.seperateBundlesPerPage.use) ? scriptBundleTransformer : defaultTransformer;
-      var styleTransformer = (config.seperateBundlesPerPage.use) ? styleBundleTransformer : defaultTransformer;
-
       var stylesStream = require('./styles').getStream();
 
-      var scriptStream = require('./scripts').getStream();
-
-      var bundleStreams = require('./bundles').getSeperateStreams();
+      var scriptStreams = require('./scripts').getSeperateStreams();
 
       var angularStream;
       if (config.angular.isAngularProject) {
@@ -128,12 +61,11 @@ module.exports = {
           }));
         }]);
 
-        pipes = addPipeIfInUse(pipes, stylesStream, styleTransformer, 'styles');
-        pipes = addPipeIfInUse(pipes, scriptStream, scriptTransformer, 'scripts');
-        pipes = addPipeIfInUse(pipes, angularStream, scriptTransformer, 'angular');
+        pipes = addPipeIfInUse(pipes, stylesStream, defaultTransformer, 'styles');
+        pipes = addPipeIfInUse(pipes, angularStream, defaultTransformer, 'angular');
 
-        for (var i = 0; i < bundleStreams.length; i++) {
-          pipes = addPipeIfInUse(pipes, bundleStreams[i].stream, scriptTransformer, bundleStreams[i].name);
+        for (var i = 0; i < scriptStreams.length; i++) {
+          pipes = addPipeIfInUse(pipes, scriptStreams[i].stream, defaultTransformer, scriptStreams[i].name);
         }
 
         return pipes;

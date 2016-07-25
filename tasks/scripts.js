@@ -58,7 +58,7 @@ var compileBundlesAsSeperateStreams = function() {
 
 var createDefaultBundle = function() {
   return {
-    name: 'main',
+    name: 'scripts',
     sources: [config.scriptSrc + '/**/*.js'],
     isAngular: false,
     minify: config.minify,
