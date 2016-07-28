@@ -217,7 +217,7 @@ Note that if you want to finetune your bundling, you should add the name of each
 
 You can define bundle order using this method.
 
-The useHtmlInjection config property expects either a boolean, or an object. If it's an object, it expects the 'use' property (boolean) and the 'injectPrefix' property (string). This string will be injected before each path.
+The useHtmlInjection config property expects either a boolean, or an object. If it's an object, it expects the 'use' property (boolean) and the 'injectPrefix' property (string). This string will be injected before each path. The final property this object requires is 'addRootSlash' (boolean).
 
 ###4.6. Usage with Bazookas CMS
 To integrate gulpinator in the Symfony based CMS currently used by our team, most configuration will stay the same. Simply set symfony.isSymfonyProject to true, and point the Src and Target strings to the correct destinations.

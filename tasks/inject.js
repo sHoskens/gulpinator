@@ -43,6 +43,7 @@ module.exports = {
       var addRootSlash = true;
       if (typeof config.useHtmlInjection === 'object') {
         injectPrefix = config.useHtmlInjection.injectPrefix;
+        addRootSlash = config.useHtmlInjection.addRootSlash;
       }
 
       var addPipeIfInUse = function(pipes, pipeContent, transformer, name) {
@@ -50,7 +51,7 @@ module.exports = {
           pipes.push([
             inject,
             pipeContent,
-            { ignorePath: ignorePath, transform: transformer, name: name, addPrefix: injectPrefix }
+            { ignorePath: ignorePath, transform: transformer, name: name, addPrefix: injectPrefix, addRootSlash: addRootSlash }
           ]);
         }
 
@@ -70,7 +71,7 @@ module.exports = {
         pipes = addPipeIfInUse(pipes, angularStream, defaultTransformer, 'angular');
 
         for (var i = 0; i < scriptStreams.length; i++) {
-          pipes = addPipeIfInUse(pipes, scriptStreams[i].stream, defaultTransformer, scriptStreams[i].name);
+          pipes = addPipeIfInUse(pipes, scriptStreams[i].stream, defaultTransformer, scriptStreams[i].name, addRootSlash: addRootSlash);
         }
 
         return pipes;
