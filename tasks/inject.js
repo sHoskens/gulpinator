@@ -71,7 +71,7 @@ module.exports = {
         pipes = addPipeIfInUse(pipes, angularStream, defaultTransformer, 'angular');
 
         for (var i = 0; i < scriptStreams.length; i++) {
-          pipes = addPipeIfInUse(pipes, scriptStreams[i].stream, defaultTransformer, scriptStreams[i].name, addRootSlash: addRootSlash);
+          pipes = addPipeIfInUse(pipes, scriptStreams[i].stream, defaultTransformer, scriptStreams[i].name);
         }
 
         return pipes;
