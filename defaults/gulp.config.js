@@ -89,6 +89,9 @@ var config = {
     // you some headaches in this case. :)
     // If set to true, make sure the correct HTML comments are added to all HTML
     // files in assetsSrc. For more information, see README.md
+    // If set to an object, expects the following parameters:
+    //    - use (boolean)
+    //    - injectPrefix (String)
     useHtmlInjection: true,
 
     // Configuration for browsersync server. Use the proxy option if you want to

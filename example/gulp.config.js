@@ -113,18 +113,15 @@ var config = {
       injectTarget: assetsSrc + '/views/Partials'
     },
 
-    // Define seperate bundles for your scripts.
-    // There are three main options for including scripts in this workflow.
-    // 1. Add external scripts through a CDN or external link, directly into the HTML
-    //    In this case, just supply an empty array to the bundles property. All your
-    //    custom scripts will then be automatically bundles (everything in the
-    //    scriptSrc location)
-    // 2. Create one large script bundle, concatenating all it's files and
-    //    automatically injecting the resulting bundle into the HTML.
-    // 3. Create multiple script bundles, injecting them into the HTML where
-    //    desired. The name of the bundle
-    // Note that with options 2 and 3 we can do our own minification, which
-    // might be handy if not all of the chosen libraries supply a .min.js file.
+    // Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the scriptSrc
+    //folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc...
+    //Each object in this array consists of these properties
+    // - name: The name of the desired output file. NOTE: you will use this name in the comment inject notation in HTML!
+    // - minify: Wether to minify these files using uglify
+    // - es6: Wether to run these files through babel's es6 compilation
+    // - lint: Wether to lint these files with jslint and jscs.
+    // - isAngular: Wether to run angular specific tasks on these files
+    // - sources: An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
     bundles: [
       {
         name: 'utilities',

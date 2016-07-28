@@ -93,7 +93,7 @@ All default options (for a `gulp build` or `gulp serve` without environment argu
 * **verbose**: (Boolean) Gulpinator will print additional info in the console.
 * **minify**: (Boolean) Use minification for default js tasks. (can be overwritten in libraries and bundles property)
 * **sourceMaps**: (Boolean) Use sourcemaps, both for js and css.
-* **useHtmlInjection**: (Boolean) Use automated HTML injection, both for css and js. See *4.5. HTML Injection* for more info.
+* **useHtmlInjection**: (Boolean \/ Object) Use automated HTML injection, both for css and js. See *4.5. HTML Injection* for more info.
 * **browsersync**: (Object) Configuration object for browsersync.
 	* **port**: (Integer) The port to run your locally hosted project on through browsersync.
 	* **isProxy**: (Boolean) Wether to run this browsersync instance as a proxy for a server, for example, a Node server on port 3000 serving all your assets, being rerouted through browsersync to port 8000.
@@ -216,6 +216,8 @@ Note that if you want to finetune your bundling, you should add the name of each
 ```
 
 You can define bundle order using this method.
+
+The useHtmlInjection config property expects either a boolean, or an object. If it's an object, it expects the 'use' property (boolean) and the 'injectPrefix' property (string). This string will be injected before each path.
 
 ###4.6. Usage with Bazookas CMS
 To integrate gulpinator in the Symfony based CMS currently used by our team, most configuration will stay the same. Simply set symfony.isSymfonyProject to true, and point the Src and Target strings to the correct destinations.

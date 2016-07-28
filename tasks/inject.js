@@ -39,13 +39,18 @@ module.exports = {
       }
 
       var ignorePath = config.defaultDest + '/';
+      var injectPrefix = '';
+      var addRootSlash = true;
+      if (typeof config.useHtmlInjection === 'object') {
+        injectPrefix = config.useHtmlInjection.injectPrefix;
+      }
 
       var addPipeIfInUse = function(pipes, pipeContent, transformer, name) {
         if (pipeContent && pipeContent._eventsCount && pipeContent._eventsCount > 0) {
           pipes.push([
             inject,
             pipeContent,
-            { ignorePath: ignorePath, transform: transformer, name: name }
+            { ignorePath: ignorePath, transform: transformer, name: name, addPrefix: injectPrefix }
           ]);
         }
 
