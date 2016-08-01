@@ -1,44 +1,75 @@
 var gulp          = require('gulp'),
-    gulpPrint     = require('gulp-print'),
-    sourcemaps    = require('gulp-sourcemaps'),
-    sass          = require('gulp-sass'),
-    autoprefixer  = require('gulp-autoprefixer'),
-    concat        = require('gulp-concat'),
-    cleanCSS      = require('gulp-clean-css'),
-    browserSync   = require('browser-sync'),
-    gulpif        = require('gulp-if'),
-    rev           = require('gulp-rev'),
-    revReplace    = require('gulp-rev-replace'),
+    eventStream = require('event-stream'),
+    compileCss    = require('../utilities/compileCss'),
     config        = require('../utilities/getConfig').getConfig(),
     exporter      = require('../utilities/createExportsObject');
 
-var compileCssStream = function() {
-  // Add extra stylesheets
-  var cssPaths = [];
-  if (config.extraStylesheets) {
-    for (var j = 0; j < config.extraStylesheets.length; j++) {
-      cssPaths.push(config.extraStylesheets[j]);
-    }
-  }
+var compileBundle = function(bundle) {
+  var dest = config.defaultDest + '/' + config.dest.styles;
+  var options = {
+    sass: bundle.sass,
+    concat: bundle.concat
+  };
+  var filename = bundle.name + '.css';
 
-  cssPaths.push(config.stylesSrc + '/**/*.scss');
-
-  return gulp.src(cssPaths)
-    .pipe(gulpif(config.verbose, gulpPrint(function(filepath) {
-      return 'running css-task on: ' + filepath;
-    })))
-    .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(sass({
-        includePaths: config.sass.includePaths
-      }))
-      .pipe(autoprefixer('> 5%'))
-      .pipe(cleanCSS({ compatibility: 'ie9' }))
-    .pipe(sourcemaps.write('./'))
-    .pipe(gulpif(config.rev, rev()))
-
-    // If using rev, don't use browsersync. That's silly.
-    .pipe(gulpif(!config.rev, browserSync.stream()))
-    .pipe(gulp.dest(config.defaultDest + '/' + config.dest.styles));
+  return compileCss(bundle.sources, filename, dest, options);
 };
 
-module.exports = exporter(compileCssStream);
+var compileBundlesAsSingleStream = function() {
+  var streams = [];
+  var options;
+
+  if (config.bundles.length > 0) {
+    for (var i = 0; i < config.bundles.length; i++) {
+      if (config.bundles[i].type === 'style') {
+        streams.push(compileBundle(config.bundles[i]));
+      }
+    }
+
+    return eventStream.merge(streams);
+  }
+  else {
+    return compileBundle(createDefaultBundle());
+  }
+};
+
+var compileBundlesAsSeperateStreams = function() {
+  var streams = [];
+
+  if (config.bundles.length > 0) {
+    for (var i = 0; i < config.bundles.length; i++) {
+      if (config.bundles[i].type === 'style') {
+        var bundle = config.bundles[i];
+        streams.push({
+          stream: compileBundle(bundle),
+          name: bundle.name
+        });
+      }
+    }
+  }
+  else {
+    streams.push({
+      stream: compileBundle(createDefaultBundle()),
+      name: 'main'
+    });
+  }
+
+  return streams;
+};
+
+var createDefaultBundle = function() {
+  return {
+    name: 'styles',
+    sources: [config.stylesSrc + '/**/*.scss', config.stylesSrc + '/**/*.css'],
+    sass: true,
+    concat: false
+  };
+};
+
+module.exports = {
+  getStream: compileBundlesAsSingleStream,
+  getTask: function() {
+    return compileBundlesAsSingleStream;
+  },
+  getSeperateStreams: compileBundlesAsSeperateStreams
+};

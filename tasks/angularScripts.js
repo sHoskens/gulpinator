@@ -8,7 +8,7 @@ var gulp        = require('gulp'),
     exporter    = require('../utilities/createExportsObject');
 
 var angularOptions = {
-  isAngular: true,
+  isAngular: config.angular.isAngularProject,
   minify: config.minify,
   lint: config.jshint,
   es6: config.es6

@@ -24,7 +24,9 @@ var compileBundlesAsSingleStream = function() {
 
   if (config.bundles.length > 0) {
     for (var i = 0; i < config.bundles.length; i++) {
-      streams.push(compileBundle(config.bundles[i]));
+      if (config.bundles[i].type === 'script') {
+        streams.push(compileBundle(config.bundles[i]));
+      }
     }
 
     return eventStream.merge(streams);
@@ -39,11 +41,13 @@ var compileBundlesAsSeperateStreams = function() {
 
   if (config.bundles.length > 0) {
     for (var i = 0; i < config.bundles.length; i++) {
-      var bundle = config.bundles[i];
-      streams.push({
-        stream: compileBundle(bundle),
-        name: bundle.name
-      });
+      if (config.bundles[i].type === 'script') {
+        var bundle = config.bundles[i];
+        streams.push({
+          stream: compileBundle(bundle),
+          name: bundle.name
+        });
+      }
     }
   }
   else {

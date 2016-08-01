@@ -26,7 +26,7 @@ var defaultTransformer = function(filepath, file, index, length, targetFile) {
 module.exports = {
   injectStylesAndScripts: function() {
     return function() {
-      var stylesStream = require('./styles').getStream();
+      var styleStreams = require('./styles').getSeperateStreams();
 
       var scriptStreams = require('./scripts').getSeperateStreams();
 
@@ -67,10 +67,13 @@ module.exports = {
           }));
         }]);
 
-        pipes = addPipeIfInUse(pipes, stylesStream, defaultTransformer, 'styles');
         pipes = addPipeIfInUse(pipes, angularStream, defaultTransformer, 'angular');
 
-        for (var i = 0; i < scriptStreams.length; i++) {
+        for (var i = 0; i < styleStreams.length; i++) {
+          pipes = addPipeIfInUse(pipes, styleStreams[i].stream, defaultTransformer, styleStreams[i].name);
+        }
+
+        for (i = 0; i < scriptStreams.length; i++) {
           pipes = addPipeIfInUse(pipes, scriptStreams[i].stream, defaultTransformer, scriptStreams[i].name);
         }
 
@@ -86,26 +89,31 @@ module.exports = {
 
       var createInjectStream = function() {
         var pipes = determineInjectStreamPipes(),
-            injectSrc,
-            injectDest,
+            injectLocations,
             injectStream;
 
         if (config.symfony.isSymfonyProject) {
-          injectSrc = config.symfony.injectFilesSrc + '/*.html.twig';
-          injectDest = config.symfony.injectTarget;
+          injectLocations = config.symfony.bundles;
         }
         else {
-          injectSrc = config.assetsSrc + '/**/*.html';
-          injectDest = config.defaultDest;
+          injectLocations.push({
+            injectFilesSrc: config.assetsSrc + '/**/*.html',
+            injectTarget: config.defaultDest
+          });
         }
 
         for (var i = 0; i < pipes.length; i++) {
           injectStream = addPipeToStream(injectStream, pipes[i]);
         }
 
-        return gulp.src(injectSrc)
-          .pipe(injectStream())
-          .pipe(gulp.dest(injectDest));
+        var streams = [];
+        for (i = 0; i < injectLocations.length; i++) {
+          var stream = gulp.src(injectLocations[i].injectFilesSrc + '/**/*.html.twig')
+              .pipe(injectStream())
+              .pipe(gulp.dest(injectLocations[i].injectTarget));
+          streams.push(stream);
+        }
+        return streams[0];
       };
 
       return createInjectStream();

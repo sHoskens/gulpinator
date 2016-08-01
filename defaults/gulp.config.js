@@ -114,15 +114,9 @@ var config = {
       injectTarget: assetsSrc + '/views/Partials'
     },
 
-    // Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the scriptSrc
-    //folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc...
-    //Each object in this array consists of these properties
-    // - name: The name of the desired output file. NOTE: you will use this name in the comment inject notation in HTML!
-    // - minify: Wether to minify these files using uglify
-    // - es6: Wether to run these files through babel's es6 compilation
-    // - lint: Wether to lint these files with jslint and jscs.
-    // - isAngular: Wether to run angular specific tasks on these files
-    // - sources: An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
+    // Fine tune the bundling of scripts and styles. By default, gulpinator will just bundle all script files in the scriptSrc
+    // and styleSrc folders into one js file. Use this if you want to bundle libraries, create seperate bundles, etc...
+    // See the readme for more details.
     bundles: [],
 
     // Define extra stylesheets to be included in your css bundle. Usefull when

@@ -12,7 +12,7 @@ small scale projects, which can be easily configured with a json file without th
 for any gulp knowledge. Flexibility and configurability are key. For it's intented use,
 see the Overview section.
 
-Note: This is still a work in progress.
+This is still a work in progress.
 
 ##Contents
 
@@ -104,14 +104,23 @@ All default options (for a `gulp build` or `gulp serve` without environment argu
 	* **isSymfonyProject**: (Boolean) Wether we are actually using the symfony php cms.
 	* **injectFilesSrc**: (String) Path to the Gulp-inject folder, containing the twig templates with the necessary comments for injection.
 	* **injectTarget**: (String) target for the Gulp-inject templates, after injection.
-* **bundles**: (Array) Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the **scriptSrc** folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc... Each object in this array consists of these properties:
-	* **name**: The name of the desired output file. NOTE: you will use this name in the comment inject notation in HTML!
+* **bundles**: (Array) Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the **scriptSrc** folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc... Each object in this array is either a script or style bundle. For the script bundles, you can define these properties:
+	* **name**: (required) The name of the desired output file. NOTE: you will use this name in the comment inject notation in HTML!
+	* **type**: (required) Should be `'script'` in this case.
 	* **minify**: Wether to minify these files using uglify
 	* **es6**: Wether to run these files through babel's es6 compilation
 	* **lint**: Wether to lint these files with jslint and jscs.
 	* **isAngular**: Wether to run angular specific tasks on these files
-	* **sources**: An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
-* **extraStylesheets**: (Path) Define extra stylesheets you want included in *main.css*. Also possible with sass, but I've put this here so all build configuration stays in one file.
+	* **sources**: (required) An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
+
+	For a style object, use these properties:
+	
+	* **name**: (required) The name of the desired output file. Not that if you are bundling sass files, the actual output names will be dependent on the names of your main sass files.
+	* **type**: (required) Should be `'style'` in this case.
+	* **sass**: Wether yo run these files through sass plugins for converting to css, cleaning, etc...
+	* **concat**: For bundling non-sass files, set this to true.
+
+* **extraStylesheets**: \<DEPRECATED\> (Path) Define extra stylesheets you want included in *main.css*. Also possible with sass, but I've put this here so all build configuration stays in one file.
 * **paint**: (String) Choose which image to paint. 'Bazookas' or 'Gulpinator'. Leave empty to paint nothing and be boring.
 
 
@@ -123,6 +132,9 @@ All the options in the above described *default* object can be overriden with en
 ##4. Intented project structure
 
 ###4.1. Suggested Folder structure
+
+I use a folder structure similar to below when not working in Symfony projects.
+
 ```
 .
 +-- angular
@@ -208,7 +220,7 @@ It's possible to use automated injection of css files in our html templates. All
 </html>
 ```
 
-Note that if you want to finetune your bundling, you should add the name of each bundle as a comment. For example, if you have created a bundle with name 'utilities', then add the following comment:
+Note that if you want to finetune your bundling, you should add the name of each bundle as a comment. For example, if you have created a bundle with name 'utilities', then add the following comment, followed by either `:js` or `:css`:
 
 ```
 	<!-- utilities:js -->
@@ -228,8 +240,8 @@ To use Browsersync with the CMS, set the browsersync.isProxy option to true, and
 
 ##5. Work in progress: Wishlist
 
-###More control over order of injection
-Right now, it's not possible to really order the individual library or script bundles. Either I solve this in the next version, or I switch to webpack to handle this for me.
+###Update dependencies, increase performance and decrease install time
+Definately necessary before any next steps are taken. I'm going to need to slim this down.
 
 ###Webpack integration
 I'd like to optionally integrate Webpack for a more robust and advanced module bundling

@@ -48,10 +48,10 @@ var serveFrontend = function() {
 
     browsersync.init(options);
 
-    gulp.watch(config.assetsSrc + '/**/*.scss', ['compile-sass'])
+    gulp.watch(config.stylesSrc, ['compile-sass'])
         .on('change', function(event) { changeEvent(event); });
 
-    gulp.watch(config.assetsSrc + '/**/*.js', ['compile-scripts'])
+    gulp.watch(config.scriptSrc, ['compile-scripts'])
         .on('change', function(event) {
           changeEvent(event);
           browsersync.reload();
