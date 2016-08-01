@@ -102,8 +102,9 @@ All default options (for a `gulp build` or `gulp serve` without environment argu
 	* **debug**: (Boolean) Verbose version of browsersync.
 * **symfony**: (Object) Configuration options for when using with our PHP cms (based on Kunstmaan cms)
 	* **isSymfonyProject**: (Boolean) Wether we are actually using the symfony php cms.
-	* **injectFilesSrc**: (String) Path to the Gulp-inject folder, containing the twig templates with the necessary comments for injection.
-	* **injectTarget**: (String) target for the Gulp-inject templates, after injection.
+	* **bundles**: An array consisting of objects. Each object contains these two properties:
+		* **injectFilesSrc**: this property is a path to the target html.twig files containing the inject comments
+		* **injectTarget**: this property is the path to the output folder of the html.twig files.
 * **bundles**: (Array) Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the **scriptSrc** folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc... Each object in this array is either a script or style bundle. For the script bundles, you can define these properties:
 	* **name**: (required) The name of the desired output file. NOTE: you will use this name in the comment inject notation in HTML!
 	* **type**: (required) Should be `'script'` in this case.
@@ -232,9 +233,9 @@ You can define bundle order using this method.
 The useHtmlInjection config property expects either a boolean, or an object. If it's an object, it expects the 'use' property (boolean) and the 'injectPrefix' property (string). This string will be injected before each path. The final property this object requires is 'addRootSlash' (boolean).
 
 ###4.6. Usage with Bazookas CMS
-To integrate gulpinator in the Symfony based CMS currently used by our team, most configuration will stay the same. Simply set symfony.isSymfonyProject to true, and point the Src and Target strings to the correct destinations.
+To integrate gulpinator in the Symfony based CMS currently used by our team, most configuration will stay the same. Simply set symfony.isSymfonyProject to true, and for each bundle with it's own css and js, create a bundle object. (Each bundle object contains the path to the html.twig files with the injection comments, and the path to the target output folder for the html.twig files with .css and .js paths injected.)
 
-The injectFilesSrc target is a folder 'Gulp-inject', containing seperate twig templates for the css and js of the project. These templates only contain the injection comments used by gulp-inject. After injection, these twig templates will be placed in a different folder (targeted by symfony.injectTarget) where they will be available for including in your layout's <head> and bottom of the <body>, for the css and js respectively.
+I ussually create a Gulp-inject folder in my Symfony project bundle. This folder contains at least a *_scripts.html.twig* and a *_styles.html.twig* file, with injection comments. I let them output to my Partials folder, and inject these twig partials in my <head> and at the bottom of my <body> tag on all necessary pages. By creating multiple different *html.twig* files with different injection comments, I can fine tune the order of my scripts or stylesheets.
 
 To use Browsersync with the CMS, set the browsersync.isProxy option to true, and set browsersync.proxyTarget to 'localhost:8000'. (or whatever port you have your symfony project running on)
 

@@ -119,6 +119,7 @@ var config = {
     // See the readme for more details.
     bundles: [],
 
+    // DEPRECATED
     // Define extra stylesheets to be included in your css bundle. Usefull when
     // adding a plugin with it's own stylesheets or a 'library' like bootstrap.
     extraStylesheets: [],
