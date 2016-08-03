@@ -107,7 +107,7 @@ var config = {
     },
 
     // Use these configuration options only when building a symfony project in our current
-    // CMS (based on Kunstmaan's CMS structure)
+    // CMS
     symfony: {
       isSymfonyProject: false,
       injectFilesSrc: assetsSrc + '/views/Gulp-inject',

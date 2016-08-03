@@ -65,7 +65,7 @@
     "gulp-util": "^3.0.6",
     "jshint-stylish": "^2.0.1",
     "lazypipe": "^1.0.1",
-    "lodash": "^4.11.1",
+    "lodash": "^4.14.1",
     "merge-stream": "^1.0.0",
     "path": "^0.12.7",
     "requirejs": "^2.1.22",

@@ -3,7 +3,8 @@ var gulp        = require('gulp'),
     browsersync = require('browser-sync'),
     config      = require('../utilities/getConfig').getConfig(),
     exporter    = require('../utilities/createExportsObject'),
-    port        = config.browsersync.port;
+    port        = config.browsersync.port,
+    _           = require('lodash');
 
 var serveFrontend = function() {
   return function() {
@@ -13,67 +14,110 @@ var serveFrontend = function() {
 
     util.log(util.colors.green('Starting browser-sync on port ' + port));
 
-    var options = {
-      port: config.browsersync.port,
-      ghostMode: {
-        clicks: true,
-        location: false,
-        forms: true,
-        scroll: true
-      },
-      injectChanges: true,
-      logFileChanges: true,
-      logLevel: config.browsersync.debug ? 'debug' : 'info',
-      logPrefix: 'browsersync',
-      notify: true,
-      reloadDelay: 1000,
-      files: [
-        config.defaultDest + '/*/**.js',
-        config.defaultDest + '/*/**.css',
-        config.defaultDest + '/*/**.html'
-      ]
-    };
-
-    if (config.browsersync.isProxy) {
-      options.proxy = {
-        target: config.browsersync.proxyTarget,
-        ws: config.browsersync.websockets
-      };
-    }
-    else {
-      options.server = {
-        baseDir: config.defaultDest + '/'
-      };
-    }
+    var options = createBrowsersyncOptions(config);
+    var sources = createSources(config);
 
     browsersync.init(options);
 
-    gulp.watch(config.stylesSrc, ['compile-sass'])
+    gulp.watch(sources.styles, ['compile-sass'])
         .on('change', function(event) { changeEvent(event); });
 
-    gulp.watch(config.scriptSrc, ['compile-scripts'])
+    gulp.watch(sources.scripts, ['compile-scripts'])
         .on('change', function(event) {
           changeEvent(event);
           browsersync.reload();
         });
 
-    gulp.watch(config.assetsSrc + '**/*.html', ['build-inject'])
+    gulp.watch(sources.html, ['build-inject'])
         .on('change', function(event) { changeEvent(event); });
 
     if (config.angular.isAngularProject) {
-      gulp.watch(config.angular.angularSrc + '/**/*.js', ['compile-angular-scripts'])
+      gulp.watch(sources.angularScripts, ['compile-angular-scripts'])
           .on('change', function(event) {
             changeEvent(event);
             browsersync.reload();
           });
 
-      gulp.watch(config.angular.angularSrc + '/**/*.html', ['compile-template-cache'])
+      gulp.watch(sources.angularTemplates, ['compile-template-cache'])
           .on('change', function(event) {
             changeEvent(event);
             browsersync.reload();
           });
     }
   };
+};
+
+var createBrowsersyncOptions = function(config) {
+  var options = {
+    port: config.browsersync.port,
+    ghostMode: {
+      clicks: true,
+      location: false,
+      forms: true,
+      scroll: true
+    },
+    injectChanges: true,
+    logFileChanges: true,
+    logLevel: config.browsersync.debug ? 'debug' : 'info',
+    logPrefix: 'browsersync',
+    notify: true,
+    reloadDelay: 1000,
+    files: [
+      config.defaultDest + '/*/**.js',
+      config.defaultDest + '/*/**.css',
+      config.defaultDest + '/*/**.html'
+    ]
+  };
+
+  if (config.browsersync.isProxy) {
+    options.proxy = {
+      target: config.browsersync.proxyTarget,
+      ws: config.browsersync.websockets
+    };
+  }
+  else {
+    options.server = {
+      baseDir: config.defaultDest + '/'
+    };
+  }
+
+  return options;
+};
+
+var createSources = function(config) {
+  var sources = {};
+
+  if (_.isEmpty(config.bundles)) {
+    sources.styles = config.stylesSrc;
+    sources.scripts = config.scriptSrc;
+  }
+  else {
+    sources.styles = createSourcesArrayFromBundles(config.bundles, 'style');
+    sources.scripts = createSourcesArrayFromBundles(config.bundles, 'script');
+  }
+
+  sources.styles = sources.styles;
+  sources.scripts = sources.scripts;
+  sources.html = config.assetsSrc;
+
+  if (config.angular.isAngularProject) {
+    sources.angularScripts = config.angular.angularSrc;
+    sources.angularTemplates = config.angular.angularSrc;
+  }
+
+  return sources;
+};
+
+var createSourcesArrayFromBundles = function(bundles, type) {
+  var sources = _.filter(bundles, function(bundle) {
+    return bundle.type === type && bundle.watch;
+  });
+
+  sources = _.map(sources, function(source) {
+    return source.sources;
+  });
+
+  return _.flatten(sources);
 };
 
 var changeEvent = function(event) {

@@ -105,18 +105,22 @@ All default options (for a `gulp build` or `gulp serve` without environment argu
 	* **bundles**: An array consisting of objects. Each object contains these two properties:
 		* **injectFilesSrc**: this property is a path to the target html.twig files containing the inject comments
 		* **injectTarget**: this property is the path to the output folder of the html.twig files.
-* **bundles**: (Array) Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the **scriptSrc** folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc... Each object in this array is either a script or style bundle. For the script bundles, you can define these properties:
+* **bundles**: (Array) Fine tune the bundling of scripts. By default, gulpinator will just bundle all script files in the **scriptSrc** folder into one js file. Use this if you want to bundle libraries, create seperate bundles of all scripts, etc... Each object in this array is either a script or style bundle.
+All bundles share these properties:
 	* **name**: (required) The name of the desired output file. NOTE: you will use this name in the comment inject notation in HTML!
+	* **sources**: (required) An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
+	* **watch**: Wether to watch these files for changes with the gulp-watch task. (default false)
+
+	Script bundles require these properties:
+	
 	* **type**: (required) Should be `'script'` in this case.
 	* **minify**: Wether to minify these files using uglify
 	* **es6**: Wether to run these files through babel's es6 compilation
 	* **lint**: Wether to lint these files with jslint and jscs.
 	* **isAngular**: Wether to run angular specific tasks on these files
-	* **sources**: (required) An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
 
-	For a style object, use these properties:
+	Style bundles require these properties:
 	
-	* **name**: (required) The name of the desired output file. Not that if you are bundling sass files, the actual output names will be dependent on the names of your main sass files.
 	* **type**: (required) Should be `'style'` in this case.
 	* **sass**: Wether yo run these files through sass plugins for converting to css, cleaning, etc...
 	* **concat**: For bundling non-sass files, set this to true.
