@@ -1,6 +1,6 @@
 #GULPINATOR
 
-A gulp-based workflow, intended for personal use. I realize there are better, more
+A gulp-based frontend bundler. I realize there are better, more
 advanced solutions and bundles out there. The purpose of this project was mostly
 to learn gulp and node, and create a configuration that's perfectly suited to the
 needs of me and my team.
@@ -112,7 +112,7 @@ All bundles share these properties:
 	* **watch**: Wether to watch these files for changes with the gulp-watch task. (default false)
 
 	Script bundles require these properties:
-	
+
 	* **type**: (required) Should be `'script'` in this case.
 	* **minify**: Wether to minify these files using uglify
 	* **es6**: Wether to run these files through babel's es6 compilation
@@ -120,12 +120,11 @@ All bundles share these properties:
 	* **isAngular**: Wether to run angular specific tasks on these files
 
 	Style bundles require these properties:
-	
+
 	* **type**: (required) Should be `'style'` in this case.
 	* **sass**: Wether yo run these files through sass plugins for converting to css, cleaning, etc...
 	* **concat**: For bundling non-sass files, set this to true.
 
-* **extraStylesheets**: \<DEPRECATED\> (Path) Define extra stylesheets you want included in *main.css*. Also possible with sass, but I've put this here so all build configuration stays in one file.
 * **paint**: (String) Choose which image to paint. 'Bazookas' or 'Gulpinator'. Leave empty to paint nothing and be boring.
 
 

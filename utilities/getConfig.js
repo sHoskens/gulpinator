@@ -29,7 +29,7 @@ module.exports = {
       // this will look for a dev object in the config.json and merge it's contents with
       // the default object's contents.
       if (util.env.env && baseConfig[util.env.env]) {
-        config = _.merge(config, baseConfig[util.env.env]);
+        config = _.merge(baseConfig['default'], baseConfig[util.env.env]);
       }
       else {
         config = baseConfig.default;

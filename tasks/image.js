@@ -5,7 +5,7 @@ var gulp      = require('gulp'),
     exporter  = require('../utilities/createExportsObject');
 
 var optimize = function() {
-  return gulp.src(config.images.src + '/**')
+  return gulp.src(config.images.src)
     .pipe(gulpif(config.images.optimize, imagemin({ progressive: true })))
     .pipe(gulp.dest(config.defaultDest + '/' + config.dest.images));
 };

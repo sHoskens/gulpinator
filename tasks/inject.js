@@ -96,10 +96,10 @@ module.exports = {
           injectLocations = config.symfony.bundles;
         }
         else {
-          injectLocations.push({
+          injectLocations = [{
             injectFilesSrc: config.assetsSrc + '/**/*.html',
             injectTarget: config.defaultDest
-          });
+          }];
         }
 
         for (var i = 0; i < pipes.length; i++) {

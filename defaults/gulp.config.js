@@ -16,7 +16,7 @@ var config = {
 
     // Define where you keep your unoptimized images, and wether they should be optimized (or simply moved)
     images: {
-      src: assetsSrc + '/img',
+      src: assetsSrc + '/img/**',
       optimize: true
     },
 
@@ -119,14 +119,18 @@ var config = {
     // See the readme for more details.
     bundles: [],
 
-    // DEPRECATED
-    // Define extra stylesheets to be included in your css bundle. Usefull when
-    // adding a plugin with it's own stylesheets or a 'library' like bootstrap.
-    extraStylesheets: [],
-
     // Choose which image to paint. 'Bazookas' or 'Gulpinator'. Leave empty to paint
     // nothing and be boring.
     paint: 'Gulpinator'
+  },
+
+  prod: {
+    rev: true,
+    jshint: false,
+    jscs: false,
+    sourceMaps: false,
+    verbose: false,
+    paint: ''
   }
 };
 
