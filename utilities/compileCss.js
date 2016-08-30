@@ -30,7 +30,7 @@ var compileCss = function(src, filename, dest, options) {
 
     // If using rev, don't use browsersync. That's silly.
     .pipe(gulpif(!config.rev, browserSync.stream()))
-    .pipe(gulp.dest(config.defaultDest + '/' + config.dest.styles));
+    .pipe(gulp.dest(dest));
 };
 
 module.exports = compileCss;

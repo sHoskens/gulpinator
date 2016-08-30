@@ -6,6 +6,10 @@ var gulp        = require('gulp'),
 
 var compileBundle = function(bundle) {
   var dest = config.defaultDest + '/' + config.dest.scripts;
+  if (bundle.dest && typeof bundle.dest === 'string') {
+    dest = bundle.dest;
+  }
+
   var options = {
     isAngular: bundle.isAngular,
     minify: bundle.minify,
