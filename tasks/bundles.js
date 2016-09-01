@@ -32,8 +32,8 @@ var compileBundle = function(bundle) {
 var compileBundlesAsSingleStream = function() {
   var streams = [];
 
-  for (var i = 0; i < config.libraries.length; i++) {
-    var bundle = config.libraries[i];
+  for (var i = 0; i < config.bundles.length; i++) {
+    var bundle = config.bundles[i];
     streams.push(compileBundle(bundle));
   }
 
@@ -43,8 +43,8 @@ var compileBundlesAsSingleStream = function() {
 var compileBundlesAsSeperateStreams = function() {
   var streams = [];
 
-  for (var i = 0; i < config.libraries.length; i++) {
-    var bundle = config.libraries[i];
+  for (var i = 0; i < config.bundles.length; i++) {
+    var bundle = config.bundles[i];
     streams.push({
       stream: compileBundle(bundle),
       name: bundle.name
