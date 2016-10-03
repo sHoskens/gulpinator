@@ -4,7 +4,6 @@ var gulp        = require('gulp'),
     jscs        = require('gulp-jscs'),
     jshint      = require('gulp-jshint'),
     concat      = require('gulp-concat'),
-    ngAnnotate  = require('gulp-ng-annotate'),
     sourcemaps  = require('gulp-sourcemaps'),
     uglify      = require('gulp-uglify'),
     util        = require('gulp-util'),
@@ -21,8 +20,7 @@ var gulp        = require('gulp'),
 // Additional options, such as wether to lint or check code style,
 // are supplied with the gulp.config.json file.
 var compileJs = function(src, filename, dest, options) {
-  var taskName = isAngular ? 'ng-task' : 'js-task';
-  var isAngular = options.isAngular;
+  var taskName = 'js-task';
   var lint = options.lint;
   var minify = options.minify;
   var es6 = options.es6;
@@ -46,7 +44,6 @@ var compileJs = function(src, filename, dest, options) {
     .pipe(gulpif(config.sourceMaps, sourcemaps.init({ loadMaps: true })))
       .pipe(gulpif(es6, babel()))
       .pipe(concat(filename))
-      .pipe(gulpif(isAngular, ngAnnotate()))
       .pipe(gulpif(minify, uglify()))
       .on('error', util.log)
     .pipe(gulpif(config.sourceMaps, sourcemaps.write('./')))

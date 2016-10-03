@@ -34,9 +34,7 @@ var config = {
     dest: {
       scripts: 'scripts',
       styles: 'styles',
-      images: 'img',
-      angular: 'scripts',
-      angularTemplates: 'templates'
+      images: 'img'
     },
 
     // The entire folder/file structure in the folder defined below will simply
@@ -48,16 +46,6 @@ var config = {
     // gulp will place all the contents of this 'movies' folder in 'public/movies',
     // NOT 'public/other/movies'.
     additionalFiles: 'assets/other',
-
-    // Angular configuration.
-    // If it's not an angular project, you can safely set isAngularProject to
-    // false and ignore or remove the other properties.
-    angular: {
-      isAngularProject: true,
-      appName: 'app',
-      angularSrc: 'angular',
-      singleModule: false
-    },
 
     // Booleans indicating desired gulp functionality
     // Activate es6 mode with babel. Configure in .babelrc file

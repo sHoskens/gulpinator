@@ -1,6 +1,5 @@
 module.exports = function(gulp) {
-  var cache       = require('gulp-cache'),
-      path        = require('path'),
+  var path        = require('path'),
       painter     = require('./tasks/painter'),
       config      = require('./utilities/getConfig').getConfig(),
       getFolders  = require('./utilities/getFolders').getFolders,
@@ -21,13 +20,8 @@ module.exports = function(gulp) {
   // Optimize images
   gulp.task('optimize-images', require('./tasks/image').getTask());
 
-  // Concat and uglify the angular app, modules, scripts and libs
+  // Concat and uglify the scripts and libs
   gulp.task('compile-scripts', require('./tasks/scripts').getTask());
-
-  if (config.angular.isAngularProject) {
-    gulp.task('compile-angular-scripts', require('./tasks/angularScripts').getTask());
-    gulp.task('compile-template-cache', ['compile-templates'],  require('./tasks/templateCache').getTask());
-  }
 
   // Bundles all chosen library files
   gulp.task('bundle-scripts', require('./tasks/bundles').getTask());
@@ -49,7 +43,7 @@ module.exports = function(gulp) {
 
   // TODO Add testing!
   // 1. Run automated testing suit
-  // 2. Make sure all js files from assets and angular are injected into
+  // 2. Make sure all js files from assets are injected into
   //    Karma config file.
   // 3. Check for additional dependencies (think jquery)
 
@@ -91,10 +85,6 @@ module.exports = function(gulp) {
     buildTasks.push('compile-scripts');
     buildTasks.push('compile-sass');
     buildTasks.push('move-html');
-    if (config.angular.isAngularProject) {
-      buildTasks.push('compile-angular-scripts');
-      buildTasks.push('compile-template-cache');
-    }
   }
 
   // jscs:disable

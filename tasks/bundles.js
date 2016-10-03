@@ -4,7 +4,6 @@ var gulp        = require('gulp'),
     uglify      = require('gulp-uglify'),
     eventStream = require('event-stream'),
     gulpPrint   = require('gulp-print'),
-    changed     = require('gulp-changed'),
     rev         = require('gulp-rev'),
     config      = require('../utilities/getConfig').getConfig(),
     exporter    = require('../utilities/createExportsObject');

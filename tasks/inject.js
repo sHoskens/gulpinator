@@ -6,13 +6,9 @@
 
 var gulp          = require('gulp'),
     gulpPrint     = require('gulp-print'),
-    debug         = require('gulp-debug'),
     inject        = require('gulp-inject'),
     gulpif        = require('gulp-if'),
     util          = require('gulp-util'),
-    eventStream   = require('event-stream'),
-    streamSeries  = require('stream-series'),
-    File          = require('vinyl'),
     rev           = require('gulp-rev'),
     lazypipe      = require('lazypipe'),
     config        = require('../utilities/getConfig').getConfig();
@@ -29,14 +25,6 @@ module.exports = {
       var styleStreams = require('./styles').getSeperateStreams();
 
       var scriptStreams = require('./scripts').getSeperateStreams();
-
-      var angularStream;
-      if (config.angular.isAngularProject) {
-        angularStream = streamSeries(
-          require('./angularScripts').getStream(),
-          require('./templateCache').getStream()
-        );
-      }
 
       var ignorePath = config.defaultDest + '/';
       var injectPrefix = '';
@@ -66,8 +54,6 @@ module.exports = {
             return 'running inject-task on: ' + filepath;
           }));
         }]);
-
-        pipes = addPipeIfInUse(pipes, angularStream, defaultTransformer, 'angular');
 
         for (var i = 0; i < styleStreams.length; i++) {
           pipes = addPipeIfInUse(pipes, styleStreams[i].stream, defaultTransformer, styleStreams[i].name);
