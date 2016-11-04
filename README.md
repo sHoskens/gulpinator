@@ -26,7 +26,7 @@ This is still a work in progress.
 
 Install using npm.
 
-`npm install gulpinator`
+`npm install gulpinator --save`
 
 Create a *gulpfile.js* in your project root, containing just this line:
 
@@ -46,7 +46,7 @@ This will copy the default, suggested configuration files from *gulpinator/defau
 to your current active directory.
 
 ##2.Overview
-This opinionated gulp-automated workflow assumes you want to build your entire project to a single destination folder, bundle your assets, write your stylesheets with Sass, javascript in ES6, use browsersync for HMR (Hot Module Reloading) and optionally use Angular. It doesn't currently support any HTML templating, like Jade or Mustache. (See the Work In Progress section) Within these confines, it attempts to be as flexible as possible.
+This opinionated gulp-automated workflow assumes you want to build your entire project to a single destination folder, bundle your assets, write your stylesheets with Sass, javascript in ES6, and use browsersync for HMR (Hot Module Reloading). It doesn't currently support any HTML templating, like Jade or Mustache. (See the Work In Progress section) Within these confines, it attempts to be as flexible as possible.
 
 ###Gulp tasks
 * `gulp init` Initializes gulpinator. It will copy all default configuration files from gulpinator, such as *.jscsrc* or *.babelrc* to your project root.
@@ -59,7 +59,6 @@ This opinionated gulp-automated workflow assumes you want to build your entire p
 * `gulp compile-scripts` Compile, minify,... .js files.
 * `gulp compile-images` Optimizes images in the assets folder.
 * `gulp compile-angular-scripts` Compiles angular files and takes care of angular dependency injection.
-* `gulp compile-template-cache` Compiles angular html templates to the template cache of it's app in a .js file.
 * `gulp bundle-libs` Bundles all chosen library files.
 * `gulp move-additional-files` Moves all additional files to the build folder.
 * `gulp build-inject` Injects css and js files into html files.

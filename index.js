@@ -2,7 +2,6 @@ module.exports = function(gulp) {
   var path        = require('path'),
       painter     = require('./tasks/painter'),
       config      = require('./utilities/getConfig').getConfig(),
-      getFolders  = require('./utilities/getFolders').getFolders,
       del         = require('del'),
       taskListing = require('gulp-task-listing');
 
