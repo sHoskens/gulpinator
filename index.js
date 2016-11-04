@@ -30,7 +30,7 @@ module.exports = function(gulp) {
   //gulp.task('test', getTask('test'));
 
   // Html injection task. Injects the css and script tags in the index.html
-  gulp.task('build-inject', ['compile-templates'], require('./tasks/inject').injectStylesAndScripts());
+  gulp.task('build-inject', require('./tasks/inject').injectStylesAndScripts());
 
   gulp.task('move-html', function() {
     return gulp.src(config.assetsSrc + '/index.html')
