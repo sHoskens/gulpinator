@@ -10,9 +10,6 @@ module.exports = function(gulp) {
   // Copies all the default files (listed in default array above) to the current working directory.
   gulp.task('init', require('./tasks/init').init);
 
-  // Move html to the tmp folder.
-  gulp.task('compile-templates', require('./tasks/compileTemplates').getTask());
-
   // Compile sass to css
   gulp.task('compile-sass', require('./tasks/styles').getTask());
 
