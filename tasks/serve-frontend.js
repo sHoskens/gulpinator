@@ -30,20 +30,6 @@ var serveFrontend = function() {
 
     gulp.watch(sources.html, ['build-inject'])
         .on('change', function(event) { changeEvent(event); });
-
-    if (config.angular.isAngularProject) {
-      gulp.watch(sources.angularScripts, ['compile-angular-scripts'])
-          .on('change', function(event) {
-            changeEvent(event);
-            browsersync.reload();
-          });
-
-      gulp.watch(sources.angularTemplates, ['compile-template-cache'])
-          .on('change', function(event) {
-            changeEvent(event);
-            browsersync.reload();
-          });
-    }
   };
 };
 
@@ -99,11 +85,6 @@ var createSources = function(config) {
   sources.styles = sources.styles;
   sources.scripts = sources.scripts;
   sources.html = config.assetsSrc;
-
-  if (config.angular.isAngularProject) {
-    sources.angularScripts = config.angular.angularSrc;
-    sources.angularTemplates = config.angular.angularSrc;
-  }
 
   return sources;
 };
