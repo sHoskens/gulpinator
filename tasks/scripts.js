@@ -71,7 +71,7 @@ var createDefaultBundle = function() {
     isAngular: false,
     minify: config.minify,
     lint: config.jshint,
-    es6: false
+    es6: config.es6
   };
 };
 
