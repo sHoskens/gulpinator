@@ -5,17 +5,19 @@
 // injection task in gulpfile.js.
 
 var gulp          = require('gulp'),
-    gulpPrint     = require('gulp-print'),
-    inject        = require('gulp-inject'),
-    gulpif        = require('gulp-if'),
-    util          = require('gulp-util'),
-    rev           = require('gulp-rev'),
-    lazypipe      = require('lazypipe'),
-    config        = require('../utilities/getConfig').getConfig();
+  gulpPrint     = require('gulp-print'),
+  inject        = require('gulp-inject'),
+  gulpif        = require('gulp-if'),
+  util          = require('gulp-util'),
+  lazypipe      = require('lazypipe'),
+  config        = require('../utilities/getConfig').getConfig();
 
 // The default transformer of gulp inject, used when seperate bundles are not
 // desired.
 var defaultTransformer = function(filepath, file, index, length, targetFile) {
+  if (config.cacheBustingVersion && typeof config.cacheBustingVersion === 'string') {
+    filepath += '?v=' + config.cacheBustingVersion;
+  }
   return inject.transform.apply(inject.transform, arguments);
 };
 
@@ -75,11 +77,15 @@ module.exports = {
 
       var createInjectStream = function() {
         var pipes = determineInjectStreamPipes(),
-            injectLocations,
-            injectStream;
+          injectLocations,
+          injectStream;
 
         if (config.symfony.isSymfonyProject) {
           injectLocations = config.symfony.bundles;
+
+          for (var i = 0; i < injectLocations.length; i++) {
+            injectLocations[i].injectFilesSrc += '/**/*.html.twig';
+          }
         }
         else {
           injectLocations = [{
@@ -94,9 +100,9 @@ module.exports = {
 
         var streams = [];
         for (i = 0; i < injectLocations.length; i++) {
-          var stream = gulp.src(injectLocations[i].injectFilesSrc + '/**/*.html.twig')
-              .pipe(injectStream())
-              .pipe(gulp.dest(injectLocations[i].injectTarget));
+          var stream = gulp.src(injectLocations[i].injectFilesSrc)
+            .pipe(injectStream())
+            .pipe(gulp.dest(injectLocations[i].injectTarget));
           streams.push(stream);
         }
         return streams[0];

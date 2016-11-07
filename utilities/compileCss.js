@@ -8,7 +8,6 @@ var gulp          = require('gulp'),
     cleanCSS      = require('gulp-clean-css'),
     browserSync   = require('browser-sync'),
     gulpif        = require('gulp-if'),
-    rev           = require('gulp-rev'),
     config        = require('../utilities/getConfig').getConfig(),
     exporter      = require('../utilities/createExportsObject');
 
@@ -24,12 +23,8 @@ var compileCss = function(src, filename, dest, options) {
       .pipe(gulpif(options.sass, autoprefixer('> 5%')))
       .pipe(gulpif(options.sass, cleanCSS({ compatibility: 'ie9' })))
     .pipe(gulpif(options.sass, sourcemaps.write('./')))
-    //.pipe(gulpif(options.sass, rename(filename)))
     .pipe(gulpif(options.concat, concat(filename)))
-    .pipe(gulpif(config.rev, rev()))
-
-    // If using rev, don't use browsersync. That's silly.
-    .pipe(gulpif(!config.rev, browserSync.stream()))
+    .pipe(browserSync.stream())
     .pipe(gulp.dest(dest));
 };
 

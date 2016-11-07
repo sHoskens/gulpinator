@@ -2,7 +2,6 @@ module.exports = function(gulp) {
   var path        = require('path'),
       painter     = require('./tasks/painter'),
       config      = require('./utilities/getConfig').getConfig(),
-      getFolders  = require('./utilities/getFolders').getFolders,
       del         = require('del'),
       taskListing = require('gulp-task-listing');
 
@@ -10,9 +9,6 @@ module.exports = function(gulp) {
 
   // Copies all the default files (listed in default array above) to the current working directory.
   gulp.task('init', require('./tasks/init').init);
-
-  // Move html to the tmp folder.
-  gulp.task('compile-templates', require('./tasks/compileTemplates').getTask());
 
   // Compile sass to css
   gulp.task('compile-sass', require('./tasks/styles').getTask());
@@ -34,7 +30,7 @@ module.exports = function(gulp) {
   //gulp.task('test', getTask('test'));
 
   // Html injection task. Injects the css and script tags in the index.html
-  gulp.task('build-inject', ['compile-templates'], require('./tasks/inject').injectStylesAndScripts());
+  gulp.task('build-inject', require('./tasks/inject').injectStylesAndScripts());
 
   gulp.task('move-html', function() {
     return gulp.src(config.assetsSrc + '/index.html')

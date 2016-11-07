@@ -8,7 +8,6 @@ var gulp        = require('gulp'),
     uglify      = require('gulp-uglify'),
     util        = require('gulp-util'),
     babel       = require('gulp-babel'),
-    rev         = require('gulp-rev'),
     config      = require('./getConfig').getConfig();
 
 // JS compile function
@@ -49,7 +48,7 @@ var compileJs = function(src, filename, dest, options) {
     .pipe(gulpif(config.sourceMaps, sourcemaps.write('./')))
 
     // Cache busting
-    .pipe(gulpif(config.rev, rev()))
+
 
     .pipe(gulp.dest(dest));
 };
