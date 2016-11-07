@@ -4,7 +4,6 @@ var gulp        = require('gulp'),
     uglify      = require('gulp-uglify'),
     eventStream = require('event-stream'),
     gulpPrint   = require('gulp-print'),
-    rev         = require('gulp-rev'),
     config      = require('../utilities/getConfig').getConfig(),
     exporter    = require('../utilities/createExportsObject');
 
@@ -16,7 +15,6 @@ var compileJsBundle = function(src, filename, dest, minify) {
     })))
     .pipe(concat(filename))
     .pipe(gulpif(minify, uglify()))
-    .pipe(gulpif(config.rev, rev()))
     .pipe(gulp.dest(dest));
 };
 

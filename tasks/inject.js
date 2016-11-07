@@ -9,13 +9,15 @@ var gulp          = require('gulp'),
   inject        = require('gulp-inject'),
   gulpif        = require('gulp-if'),
   util          = require('gulp-util'),
-  rev           = require('gulp-rev'),
   lazypipe      = require('lazypipe'),
   config        = require('../utilities/getConfig').getConfig();
 
 // The default transformer of gulp inject, used when seperate bundles are not
 // desired.
 var defaultTransformer = function(filepath, file, index, length, targetFile) {
+  if (config.cacheBustingVersion && typeof config.cacheBustingVersion === 'string') {
+    filepath += '?v=' + config.cacheBustingVersion;
+  }
   return inject.transform.apply(inject.transform, arguments);
 };
 

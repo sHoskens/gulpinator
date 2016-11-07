@@ -51,9 +51,10 @@ var config = {
     // Activate es6 mode with babel. Configure in .babelrc file
     es6: true,
 
-    // Add hashes to each asset, to allow cache busting
-    // Note: you will not be able to inject css with browsersync using this method
-    rev: false,
+    // Append a string to the end of the url, for cache-busting. If not set, or set
+    // to false, there will be no cache busting.
+    // This only works if html injection is turned on.
+    cacheBustingVersion: '1',
 
     // Use jsHint for linting
     jshint: true,
