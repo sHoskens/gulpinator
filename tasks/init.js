@@ -2,10 +2,7 @@ var exec            = require('child_process').exec,
     activeDirectory = process.cwd(),
     defaults        = [
       '.babelrc',
-      '.bowerrc',
-      '.jscsrc',
-      '.jshintrc',
-      'gulp.config.js'
+      'gulpinator.config.js'
     ];
 
 // Copies all the default files (listed in default array above) to the current working directory.

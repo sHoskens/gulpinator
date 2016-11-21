@@ -1,102 +1,118 @@
 module.exports = function(gulp) {
-  var path        = require('path'),
-      painter     = require('./tasks/painter'),
-      config      = require('./utilities/getConfig').getConfig(),
-      del         = require('del'),
-      taskListing = require('gulp-task-listing');
 
+  const path        = require('path'),
+        del         = require('del'),
+        painter     = require('./tasks/painter'),
+        gulpsync    = require('gulp-sync')(gulp),
+        taskManager = require('./utilities/taskManager'),
+        config      = require('./utilities/getConfig').getConfig();
+
+  const TASKS = {
+    webpack: 'webpack',
+    styles: require('./tasks/styles'),
+    jsBundle: require('./tasks/bundleJs'),
+    templates: require('./tasks/templates'),
+    move: require('./tasks/moveFiles'),
+
+    inject: require('./tasks/inject'),
+
+    clean: 'clean',
+    destroy: 'destroy',
+    build: 'build'
+  };
+
+  // Allow some extra listeners in node.
   require('events').EventEmitter.prototype._maxListeners = 30;
 
-  // Copies all the default files (listed in default array above) to the current working directory.
-  gulp.task('init', require('./tasks/init').init);
+  // This array will contain all tasks necessary for the regular, default build task, in order.
+  let buildTaskDependencies = [];
 
-  // Compile sass to css
-  gulp.task('compile-sass', require('./tasks/styles').getTask());
+  // File injection in html is a tricky thing. We need to get the correct, relative
+  // paths of the files to inject, based on the result of several streams (tasks)
+  // First, we need to check if any of the files defined in the config need injection.
+  // If not, skip all fancy logic and just handle the regular tasks.
+  let templateStreams = [];
+  for (let file of config.files) {
+    if (file.options && file.options.useInjection) {
+      templateStreams.push(file);
+    }
+  }
 
-  // Optimize images
-  gulp.task('optimize-images', require('./tasks/image').getTask());
+  if (templateStreams.length) {
+    // Using injection. Buckle up.
+    gulp.task(TASKS.inject.name, function() {
+      return TASKS.inject.createInjectPipeline(
+        taskManager.createUnfinishedStream(TASKS.templates),
+        [
+          taskManager.createSeperateStreams(TASKS.styles),
+          taskManager.createSeperateStreams(TASKS.jsBundle)
+        ]
+      )
+    });
+    buildTaskDependencies.push(TASKS.inject.name);
+  }
+  else {
+    // Not using injection. Just add all the streams to the dependencies
+    // of the build task.
 
-  // Concat and uglify the scripts and libs
-  gulp.task('compile-scripts', require('./tasks/scripts').getTask());
+    // Compile sass to css and minify
+    gulp.task(TASKS.styles.name, function() {
+      return taskManager.createSingleStream(TASKS.styles);
+    });
+    buildTaskDependencies.push(TASKS.styles.name);
 
-  // Bundles all chosen library files
-  gulp.task('bundle-scripts', require('./tasks/bundles').getTask());
+    // Bundle seperate js files. Optional minification.
+    gulp.task(TASKS.jsBundle.name, function() {
+      return taskManager.createSingleStream(TASKS.jsBundle);
+    });
+    buildTaskDependencies.push(TASKS.jsBundle.name);
 
-  // TODO move fonts, and check for possible extra font tasks
+    // Run js (es6) files through webpack for more advanced js compilation
 
-  gulp.task('move-additional-files', require('./tasks/moveAdditional').getTask());
 
-  // Gulp task for unit testing and E2E testing
-  //gulp.task('test', getTask('test'));
+    // Compile html templates (Supported: mustache)
+    gulp.task(TASKS.templates.name, function() {
+      return taskManager.createSingleStream(TASKS.templates);
+    });
+    buildTaskDependencies.push(TASKS.templates.name);
+  }
 
-  // Html injection task. Injects the css and script tags in the index.html
-  gulp.task('build-inject', require('./tasks/inject').injectStylesAndScripts());
-
-  gulp.task('move-html', function() {
-    return gulp.src(config.assetsSrc + '/index.html')
-      .pipe(gulp.dest(config.defaultDest));
+  // Move additional files.
+  gulp.task(TASKS.move.name, function() {
+    return taskManager.createSingleStream(TASKS.move);
   });
+  buildTaskDependencies.push(TASKS.move.name);
 
-  // TODO Add testing!
-  // 1. Run automated testing suit
-  // 2. Make sure all js files from assets are injected into
-  //    Karma config file.
-  // 3. Check for additional dependencies (think jquery)
-
-  // Clean the public folder of everything except images.
-  gulp.task('clean', function() {
+  // Clean the compilation folder of everything except images.
+  gulp.task(TASKS.clean, function() {
     del.sync(
       [
-        config.defaultDest + '/**/*.js',
-        config.defaultDest + '/**/*.css',
-        config.defaultDest + '/*.html',
-        config.defaultDest + '/**/*.json',
-        config.defaultDest + '/**/*.map'
+        config.options.dest + '/**/*.js',
+        config.options.dest + '/**/*.css',
+        config.options.dest + '/**/*.html',
+        config.options.dest + '/**/*.json',
+        config.options.dest + '/**/*.map'
       ]
     );
   });
 
-  gulp.task('destroy', function() {
-    del.sync([config.defaultDest + '/**/*.*']);
+  // Clean everything
+  gulp.task(TASKS.destroy, function() {
+    del.sync([config.options.dest + '/**/*.*']);
   });
 
-  var buildTasks = [];
-
-  buildTasks.push('optimize-images');
-  buildTasks.push('move-additional-files');
-
-  var useInjection = false;
-  if (typeof config.useHtmlInjection === 'object') {
-    useInjection = config.useHtmlInjection.use;
-  }
-  else {
-    useInjection = config.useHtmlInjection;
-  }
-
-  if (useInjection) {
-    buildTasks.push('build-inject');
-  }
-  else {
-    buildTasks.push('bundle-scripts');
-    buildTasks.push('compile-scripts');
-    buildTasks.push('compile-sass');
-    buildTasks.push('move-html');
-  }
-
-  // jscs:disable
-  gulp.task('build', buildTasks, function () {
-    del.sync('tmp');
-    if( config.paint === 'Gulpinator') {
+  // Create the main tasks, which run all other tasks defined above in correct order.
+  gulp.task(TASKS.build, buildTaskDependencies, function() {
+    if( config.options.paint.toLowerCase() === 'gulpinator') {
       painter.paintGulpinator();
     }
-    else if (config.paint === 'Bazookas') {
+    else if (config.options.paint.toLowerCase() === 'bazookas') {
       painter.paintBazookas();
     }
   });
 
-  gulp.task('serve', ['build'], require('./tasks/serve-frontend').getTask());
+  // Copies all the default files (listed in default array above) to the current working directory.
+  gulp.task('init', require('./tasks/init').init);
 
-  gulp.task('help', taskListing);
-
-  gulp.task('default', ['help']);
+  gulp.task('default', [TASKS.build]);
 };

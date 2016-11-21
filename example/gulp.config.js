@@ -1,7 +1,7 @@
 // This file exposes all configuration for the gulp tasks. If the comments do
 // not suffice, check out the README.md.
 
-var assetsSrc = 'assets';
+var assetsSrc = 'src';
 var config = {
   default: {
     // The folder containing all your html, css, styles, images, fonts,...
@@ -51,16 +51,6 @@ var config = {
     // NOT 'public/other/movies'.
     additionalFiles: 'assets/other',
 
-    // Angular configuration.
-    // If it's not an angular project, you can safely set isAngularProject to
-    // false and ignore or remove the other properties.
-    angular: {
-      isAngularProject: true,
-      appName: 'app',
-      angularSrc: 'angular',
-      singleModule: false
-    },
-
     // Booleans indicating desired gulp functionality
     // Activate es6 mode with babel. Configure in .babelrc file
     es6: true,
@@ -70,10 +60,10 @@ var config = {
     rev: false,
 
     // Use jsHint for linting
-    jshint: true,
+    jshint: false,
 
     // Use jscs for style linting
-    jscs: true,
+    jscs: false,
 
     // Gulp prints additional information in the console
     verbose: true,
@@ -91,7 +81,7 @@ var config = {
     // you some headaches in this case. :)
     // If set to true, make sure the correct HTML comments are added to all HTML
     // files in assetsSrc. For more information, see README.md
-    useHtmlInjection: true,
+    useHtmlInjection: false,
 
     // Configuration for browsersync server. Use the proxy option if you want to
     // run browsersync as a proxy for, for example, a node server serving your html.
@@ -124,30 +114,12 @@ var config = {
     // - sources: An array of strings. Each string is a path to the desired files to be bundled. Accepts glob patterns. (i.e. assets/js/\*\*.\*.js)
     bundles: [
       {
-        name: 'utilities',
-        minify: false,
-        sources: [
-          'vendor/lodash/dist/lodash.min.js',
-          'vendor/jquery/dist/jquery.min.js'
-        ]
-      },
-      {
-        name: 'angularBundle',
-        minify: true,
-        sources: [
-          'vendor/angular/angular.js',
-          'vendor/angular-mocks/angular-mocks.js',
-          'vendor/angular-ui-router/release/angular-ui-router.js',
-          'vendor/restangular/dist/restangular.js'
-        ]
-      },
-      {
         name: 'scripts',
         minify: true,
         es6: true,
         lint: true,
         sources: [
-          assetsSrc + '/js/**/*.js'
+          assetsSrc + '/scripts/**/*.js'
         ]
       }
     ],
@@ -155,11 +127,6 @@ var config = {
     // Choose which image to paint. 'Bazookas' or 'Gulpinator'. Leave empty to paint
     // nothing and be boring.
     paint: 'Gulpinator'
-  },
-
-  prod: {
-    verbose: false,
-    paint: ''
   }
 };
 

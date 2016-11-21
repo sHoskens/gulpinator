@@ -1,114 +1,149 @@
-// Begone from here!
-// Honestly, don't mess with this file, it has arcane and mysterious ways. I barely
-// understand what's going on myself.
-// If you have injections problems or bugs, you'd be better of writing your own custom
-// injection task in gulpfile.js.
+const gulp        = require('gulp'),
+      inject      = require('gulp-inject'),
+      gutil        = require('gulp-util'),
+      lazypipe    = require('lazypipe'),
+      eventStream   = require('event-stream'),
+      config      = require('../utilities/getConfig').getConfig();
 
-var gulp          = require('gulp'),
-  gulpPrint     = require('gulp-print'),
-  inject        = require('gulp-inject'),
-  gulpif        = require('gulp-if'),
-  util          = require('gulp-util'),
-  lazypipe      = require('lazypipe'),
-  config        = require('../utilities/getConfig').getConfig();
+const NAME = 'inject-assets';
 
-// The default transformer of gulp inject, used when seperate bundles are not
-// desired.
-var defaultTransformer = function(filepath, file, index, length, targetFile) {
-  if (config.cacheBustingVersion && typeof config.cacheBustingVersion === 'string') {
-    filepath += '?v=' + config.cacheBustingVersion;
-  }
+const ignorePath = config.options.dest + '/',
+      injectSuffix = config.options.injectSuffix || '',
+      addRootSlash = config.options.addRootSlash || false;
+
+// The default transformer of gulp inject. Doesn't really do anything at
+// the moment, but I've placed it here if I need a quick way to change
+// the output of the injection or injected files.
+const defaultTransformer = function(filepath, file, index, length, targetFile) {
+  // if (config.cacheBustingVersion && typeof config.cacheBustingVersion === 'string') {
+  //   filepath += '?v=' + config.cacheBustingVersion;
+  // }
+
   return inject.transform.apply(inject.transform, arguments);
 };
 
+// Helper function to add a pipe with correct arguments.
+let addPipeIfInUse = function(pipes, pipeContent, transformer, name) {
+  if (pipeContent && pipeContent._eventsCount && pipeContent._eventsCount > 0) {
+    pipes.push([
+      inject,
+      pipeContent,
+      {
+        ignorePath: ignorePath,
+        transform: transformer,
+        name: name,
+        addPrefix: injectSuffix,
+        addRootSlash: addRootSlash }
+    ]);
+  }
+
+  return pipes;
+};
+
+/**
+ * createInjectPipelines
+ * Creates an array of gulp pipes with all injectable streams of
+ * the project. Unnamed streams will be merged, and injected within
+ * the standard gulp-inject html comments. For example, all regular
+ * streams from the bundle-js task will be injected between
+ * <!-- inject:js --> and <!-- endinject -->.
+ * If a streams has a name, we want to inject it only between named
+ * comments, like so <!-- name:js -->.
+ *
+ * @param injectableStreams: {Array} all streams resulting in files
+ * which can be injected in a template.
+ * @returns {Array} An array of gulp pipes. (functions to be consumed
+ *  by the gulpStream.pipe() function)
+ */
+let createInjectPipelines = function(injectableStreams) {
+  let pipes = [];
+
+  for (let i = 0; i < injectableStreams.length; i++) {
+    let streamArray = injectableStreams[i];
+
+    let mergeableStreams = [];
+    let mergeStreamName = '';
+
+    for (let j = 0; j < streamArray.length; j++) {
+      let currentStream = streamArray[j];
+
+      if (currentStream.name) {
+        gutil.log('currentStream name: ', currentStream.name);
+        pipes = addPipeIfInUse(pipes, currentStream.stream, defaultTransformer, currentStream.name);
+      }
+      else {
+        gutil.log('currentstream does not have name');
+        mergeableStreams.push(currentStream.stream);
+        mergeStreamName = currentStream.taskName;
+      }
+    }
+
+    gutil.log('mergeableStreams: ', mergeableStreams.length);
+    let mergedStream = eventStream.merge(mergeableStreams);
+    pipes = addPipeIfInUse(pipes, mergedStream, defaultTransformer, '');
+  }
+
+  return pipes;
+};
+
 module.exports = {
-  injectStylesAndScripts: function() {
-    return function() {
-      var styleStreams = require('./styles').getSeperateStreams();
+  name: NAME,
 
-      var scriptStreams = require('./scripts').getSeperateStreams();
+  /**
+   * createInjectPipeline
+   * This function is responsible for creating a correct pipeline
+   * for injection.
+   * It expects 'templateStreams', containing all streams which
+   * result in template files (.html) which desire some files to be
+   * injected in them. These templates tell gulpinator where to inject
+   * using html comments. Check out gulp-inject plugin for more details.
+   * It also expects all the 'injectableStreams', i.e. streams resulting
+   * in files which can be injected, such as .js or .css files.
+   *
+   * @param templateStreams: {Array} all streams resulting in compiled
+   * templates. Note that this array does not just expect streams, but
+   * objects with the following structure:
+   *    {
+   *      stream: The actual, unfinished stream. (no gulp.dest has been
+   *              piped into this stream.)
+   *      dest: The destination of these templates.
+   *    }
+   * @param injectableStreams: {Array} all streams resulting in files
+   * which can be injected in a template.
+   * @returns {Object} The finished gulp inject stream.
+   */
+  createInjectPipeline: function(templateStreams, injectableStreams) {
+    // Lazily add the pipe to the stream using lazyPipe.
+    // We use apply to add the arguments to the function, without calling it.
+    let addPipeToStream = function(stream, pipeArguments) {
+      stream = (stream) ? stream : lazypipe();
+      return stream.pipe.apply(null, pipeArguments);
+    };
 
-      var ignorePath = config.defaultDest + '/';
-      var injectPrefix = '';
-      var addRootSlash = true;
-      if (typeof config.useHtmlInjection === 'object') {
-        injectPrefix = config.useHtmlInjection.injectPrefix;
-        addRootSlash = config.useHtmlInjection.addRootSlash;
+    let pipes = createInjectPipelines(injectableStreams);
+
+    if (pipes.length) {
+      let injectStream;
+
+      for (let i = 0; i < pipes.length; i++) {
+        injectStream = addPipeToStream(injectStream, pipes[i]);
       }
 
-      var addPipeIfInUse = function(pipes, pipeContent, transformer, name) {
-        if (pipeContent && pipeContent._eventsCount && pipeContent._eventsCount > 0) {
-          pipes.push([
-            inject,
-            pipeContent,
-            { ignorePath: ignorePath, transform: transformer, name: name, addPrefix: injectPrefix, addRootSlash: addRootSlash }
-          ]);
+      let resultStreams = [];
+      for (let i = 0; i < templateStreams.length; i++) {
+        if (templateStreams[i].unfinishedStream) {
+          templateStreams[i].unfinishedStream
+            .pipe(injectStream()) // lazy loaded inject pipeline
+            .pipe(gulp.dest(templateStreams[i].dest));
+
+          resultStreams.push(templateStreams[i].unfinishedStream);
         }
+      }
 
-        return pipes;
-      };
-
-      var determineInjectStreamPipes = function() {
-        var pipes = [];
-
-        pipes.push([function() {
-          return gulpif(config.verbose, gulpPrint(function(filepath) {
-            return 'running inject-task on: ' + filepath;
-          }));
-        }]);
-
-        for (var i = 0; i < styleStreams.length; i++) {
-          pipes = addPipeIfInUse(pipes, styleStreams[i].stream, defaultTransformer, styleStreams[i].name);
-        }
-
-        for (i = 0; i < scriptStreams.length; i++) {
-          pipes = addPipeIfInUse(pipes, scriptStreams[i].stream, defaultTransformer, scriptStreams[i].name);
-        }
-
-        return pipes;
-      };
-
-      var addPipeToStream = function(stream, pipeArguments) {
-        // Since we're using lazyPipe, we can't just add the pipe. We need to add
-        // the function, optionally followed by it's arguments, without calling it.
-        stream = (stream) ? stream : lazypipe();
-        return stream.pipe.apply(null, pipeArguments);
-      };
-
-      var createInjectStream = function() {
-        var pipes = determineInjectStreamPipes(),
-          injectLocations,
-          injectStream;
-
-        if (config.symfony.isSymfonyProject) {
-          injectLocations = config.symfony.bundles;
-
-          for (var i = 0; i < injectLocations.length; i++) {
-            injectLocations[i].injectFilesSrc += '/**/*.html.twig';
-          }
-        }
-        else {
-          injectLocations = [{
-            injectFilesSrc: config.assetsSrc + '/**/*.html',
-            injectTarget: config.defaultDest
-          }];
-        }
-
-        for (var i = 0; i < pipes.length; i++) {
-          injectStream = addPipeToStream(injectStream, pipes[i]);
-        }
-
-        var streams = [];
-        for (i = 0; i < injectLocations.length; i++) {
-          var stream = gulp.src(injectLocations[i].injectFilesSrc)
-            .pipe(injectStream())
-            .pipe(gulp.dest(injectLocations[i].injectTarget));
-          streams.push(stream);
-        }
-        return streams[0];
-      };
-
-      return createInjectStream();
-    };
+      return eventStream.merge(resultStreams);
+    }
+    else {
+      gutil.log(gutil.colors.red('No valid injectable streams defined.'));
+    }
   }
 };
