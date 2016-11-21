@@ -5,7 +5,7 @@ const gulp        = require('gulp'),
       mustache    = require('gulp-mustache'),
       config      = require('../utilities/getConfig').getConfig();
 
-const NAME = 'compile-templates';
+const NAME = require('../utilities/taskNames').templates;
 
 /**
  * createTemplatesStream

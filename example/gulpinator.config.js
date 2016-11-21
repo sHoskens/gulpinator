@@ -1,24 +1,21 @@
 // This file exposes all configuration for the gulp tasks. If the comments do
 // not suffice, check out the README.md.
-
 const ROOT = './src';
-const TASKS = {
-  webpack: 'webpack',
-  styles: 'compile-sass',
-  jsBundle: 'bundle-js',
-  templates: 'compile-templates',
-  move: 'move-files'
-};
-// const webpackConfig = require('./webpack.config');
+const path = require('path');
+const TASKS = require('../utilities/taskNames');
 
 const defaultConfig = {
   files: [
     {
-      target: ROOT + '/scripts/main.js',
-      task: TASKS.jsBundle,
+      target: '',
+      task: TASKS.webpack,
       options: {
         dest: 'scripts',
-        name: 'myscript'
+        webpack: {
+          entry: path.join(__dirname, ROOT, 'scripts', 'main.js'),
+          output: path.join(__dirname, 'public', 'scripts')
+        }
+        // customWebpackConfig: process.cwd() + '/webpack.config.js'
       }
     },
 
@@ -26,7 +23,10 @@ const defaultConfig = {
       target: ROOT + '/scripts/bundle/**/*.js',
       task: TASKS.jsBundle,
       options: {
-        dest: 'scripts'
+        dest: 'scripts',
+        minify: true,
+        sourcemaps: true,
+        hash: '7y97T0h23l85'
       }
     },
 
@@ -60,13 +60,16 @@ const defaultConfig = {
   options: {
     dest: 'public',
     verbose: true,
-    paint: 'bazookas'
+    paint: 'bazookas',
+    injectPrefix: 'prefix'
   }
 };
 
 const productionConfig = {
   options: {
-    paint: 'gulpinator'
+    dest: 'dist',
+    paint: false,
+    verbose: false
   }
 };
 

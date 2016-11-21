@@ -8,7 +8,7 @@ module.exports = function(gulp) {
         config      = require('./utilities/getConfig').getConfig();
 
   const TASKS = {
-    webpack: 'webpack',
+    webpack: require('./tasks/run-webpack'),
     styles: require('./tasks/styles'),
     jsBundle: require('./tasks/bundleJs'),
     templates: require('./tasks/templates'),
@@ -45,7 +45,8 @@ module.exports = function(gulp) {
         taskManager.createUnfinishedStream(TASKS.templates),
         [
           taskManager.createSeperateStreams(TASKS.styles),
-          taskManager.createSeperateStreams(TASKS.jsBundle)
+          taskManager.createSeperateStreams(TASKS.jsBundle),
+          taskManager.createSeperateStreams(TASKS.webpack)
         ]
       )
     });
@@ -68,7 +69,10 @@ module.exports = function(gulp) {
     buildTaskDependencies.push(TASKS.jsBundle.name);
 
     // Run js (es6) files through webpack for more advanced js compilation
-
+    gulp.task(TASKS.webpack.name, function() {
+      return taskManager.createSingleStream(TASKS.webpack);
+    });
+    buildTaskDependencies.push(TASKS.webpack.name);
 
     // Compile html templates (Supported: mustache)
     gulp.task(TASKS.templates.name, function() {
@@ -103,11 +107,13 @@ module.exports = function(gulp) {
 
   // Create the main tasks, which run all other tasks defined above in correct order.
   gulp.task(TASKS.build, buildTaskDependencies, function() {
-    if( config.options.paint.toLowerCase() === 'gulpinator') {
-      painter.paintGulpinator();
-    }
-    else if (config.options.paint.toLowerCase() === 'bazookas') {
-      painter.paintBazookas();
+    if (config.paint) {
+      if( config.options.paint.toLowerCase() === 'gulpinator') {
+        painter.paintGulpinator();
+      }
+      else if (config.options.paint.toLowerCase() === 'bazookas') {
+        painter.paintBazookas();
+      }
     }
   });
 

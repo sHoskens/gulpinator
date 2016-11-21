@@ -8,7 +8,7 @@ const gulp        = require('gulp'),
       utility     = require('../utilities/utility'),
       config      = require('../utilities/getConfig').getConfig();
 
-const NAME = 'bundle-js';
+const NAME = require('../utilities/taskNames').jsBundle;
 
 let increment = 1;
 

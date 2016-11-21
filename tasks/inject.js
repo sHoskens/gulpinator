@@ -5,10 +5,10 @@ const gulp        = require('gulp'),
       eventStream   = require('event-stream'),
       config      = require('../utilities/getConfig').getConfig();
 
-const NAME = 'inject-assets';
+const NAME = require('../utilities/taskNames').inject;
 
 const ignorePath = config.options.dest + '/',
-      injectSuffix = config.options.injectSuffix || '',
+      injectPrefix = config.options.injectPrefix || '',
       addRootSlash = config.options.addRootSlash || false;
 
 // The default transformer of gulp inject. Doesn't really do anything at
@@ -18,6 +18,10 @@ const defaultTransformer = function(filepath, file, index, length, targetFile) {
   // if (config.cacheBustingVersion && typeof config.cacheBustingVersion === 'string') {
   //   filepath += '?v=' + config.cacheBustingVersion;
   // }
+
+  if (injectPrefix) {
+    filepath = injectPrefix + filepath;
+  }
 
   return inject.transform.apply(inject.transform, arguments);
 };
@@ -32,7 +36,6 @@ let addPipeIfInUse = function(pipes, pipeContent, transformer, name) {
         ignorePath: ignorePath,
         transform: transformer,
         name: name,
-        addPrefix: injectSuffix,
         addRootSlash: addRootSlash }
     ]);
   }
@@ -68,19 +71,16 @@ let createInjectPipelines = function(injectableStreams) {
       let currentStream = streamArray[j];
 
       if (currentStream.name) {
-        gutil.log('currentStream name: ', currentStream.name);
         pipes = addPipeIfInUse(pipes, currentStream.stream, defaultTransformer, currentStream.name);
       }
       else {
-        gutil.log('currentstream does not have name');
         mergeableStreams.push(currentStream.stream);
         mergeStreamName = currentStream.taskName;
       }
     }
 
-    gutil.log('mergeableStreams: ', mergeableStreams.length);
     let mergedStream = eventStream.merge(mergeableStreams);
-    pipes = addPipeIfInUse(pipes, mergedStream, defaultTransformer, '');
+    pipes = addPipeIfInUse(pipes, mergedStream, defaultTransformer, mergeStreamName);
   }
 
   return pipes;

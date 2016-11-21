@@ -8,10 +8,9 @@ const gulp          = require('gulp'),
       cleanCSS      = require('gulp-clean-css'),
       gulpif        = require('gulp-if'),
       config        = require('../utilities/getConfig').getConfig()
-      utility       = require('../utilities/utility'),
-      exporter      = require('../utilities/createExportsObject');
+      utility       = require('../utilities/utility');
 
-const NAME = 'compile-sass';
+const NAME = require('../utilities/taskNames').styles;
 
 /**
  * createCompileSassStream

@@ -1,3 +1,3 @@
-var greet = require('greeter');
+import { greet } from './components/greeter';
 
 greet('Dave');

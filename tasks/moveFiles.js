@@ -4,7 +4,7 @@ const gulp        = require('gulp'),
       rename      = require('gulp-rename'),
       config      = require('../utilities/getConfig').getConfig();
 
-const NAME = 'move-files';
+const NAME = require('../utilities/taskNames').move;
 
 /**
  * createMoveFilesStream
