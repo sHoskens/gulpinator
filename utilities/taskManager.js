@@ -19,9 +19,9 @@ const _             = require('lodash'),
  * @returns {Array} An array of standard gulp streams. These streams
  * have not yet been activated.
  */
-function getStreamsForTask(task) {
+function getStreamsForTask(task, useServeStream) {
   let streams = [];
-
+  gutil.log(gutil.colors.blue('----- RUNNING ON TASK ' + task.name));
   if (config.files.length > 0) {
     for (let i = 0; i < config.files.length; i++) {
       if (config.files[i].task === task.name) {
@@ -30,8 +30,16 @@ function getStreamsForTask(task) {
           name = config.files[i].options.name;
         }
 
+        let stream;
+        if (task.getServeStream && typeof task.getServeStream === 'function') {
+          stream = task.getServeStream(config.files[i]);
+        }
+        else {
+          stream = task.getStream(config.files[i]);
+        }
+
         streams.push({
-          stream: task.getStream(config.files[i]),
+          stream: stream,
           taskName: config.files[i].task,
           name: name
         });
@@ -47,7 +55,11 @@ function getStreamsForTask(task) {
 }
 
 /**
+ * createSeperateStreams
+ *
  * Wrapper around the getStreamsForTask function.
+ *
+ * @param task
  */
 function createSeperateStreams(task) {
   return getStreamsForTask(task);
@@ -68,15 +80,17 @@ function createSingleStream(task) {
     return streamObj.stream;
   });
 
-  let stream = eventStream.merge(streams);
-
-  return function() {
-    return stream;
+  if (streams.length === 1) {
+    return streams[0];
+  }
+  else {
+    return eventStream.merge(streams);
   }
 }
 
 /**
  * createUnfinishedStream
+ *
  * Returns an array of streams without a gulp.dest. Necessary if you want
  * to get fancy and dynamically add other pipelines to the stream.
  *
@@ -110,8 +124,21 @@ function createUnfinishedStream(task) {
   }
 }
 
+/**
+ * createServeStream
+ *
+ * Gets the serve version of the regular single stream. If a task
+ * does not have a seperate serve version defined, use the regular one.
+ *
+ * @param task
+ */
+function createServeStream(task) {
+  return getStreamsForTask(task, true);
+}
+
 module.exports = {
   createSeperateStreams: createSeperateStreams,
   createSingleStream: createSingleStream,
+  createServeStream: createServeStream,
   createUnfinishedStream: createUnfinishedStream
 };

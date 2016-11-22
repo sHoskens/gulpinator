@@ -7,10 +7,34 @@ const gulp          = require('gulp'),
       autoprefixer  = require('gulp-autoprefixer'),
       cleanCSS      = require('gulp-clean-css'),
       gulpif        = require('gulp-if'),
+      browsersync   = require('browser-sync'),
       config        = require('../utilities/getConfig').getConfig()
       utility       = require('../utilities/utility');
 
 const NAME = require('../utilities/taskNames').styles;
+const defaultOptions = {
+  sourcemaps: false,
+  hash: ''
+};
+
+
+
+const createSassStreamConfig = function(file) {
+  // Either get the options for the file as defined in the config, or use
+  // the default.
+  let options = defaultOptions;
+  if (file.options) {
+    options = Object.create(file.options);
+  }
+
+  options.dest = utility.getCorrectDest(file);
+
+  // Add a suffix to the resulting file, depending on cache busting.
+  options.suffix = options.hash ? '.' + options.hash : '';
+
+  gutil.log(gutil.colors.blue(options.dest));
+  return options;
+};
 
 /**
  * createCompileSassStream
@@ -31,38 +55,33 @@ const NAME = require('../utilities/taskNames').styles;
  *  optional Options object.
  * @returns {Stream} A standard gulp stream, to be activated when necessary.
  */
-let createCompileSassStream = function(file) {
-  // Either get the options for the file as defined in the config, or use
-  // the default.
-  let options = file.options || {
-      sourcemaps: false,
-      hash: ''
-    };
-
-  let useSourcemaps = config.options.sourcemaps;
-  let dest = utility.getCorrectDest(file);
-
-  // Add a suffix to the resulting file, depending on cache busting.
-  let suffix = options.hash ? '.' + options.hash : '';
-
+const createCompileSassStream = function(file) {
+  let options = createSassStreamConfig(file);
 
   return gulp.src(file.target)
-    .pipe(gulpif(useSourcemaps, sourcemaps.init({ loadMaps: true })))
+    .pipe(gulpif(options.sourcemaps, sourcemaps.init({ loadMaps: true })))
       .pipe(gulpif(config.options.verbose, rename(function(path) {
-        path.basename += suffix;
+        if (path.basename[0] !== '_') {
+          path.basename += options.suffix;
 
-        utility.printTaskDetails(
-          file.target, NAME, dest + '/' + path.basename + path.extname
-        );
+          utility.printTaskDetails(
+            file.target, NAME, options.dest + '/' + path.basename + path.extname
+          );
+        }
       })))
       .pipe(sass())
       .pipe(autoprefixer('> 5%'))
       .pipe(cleanCSS({ compatibility: 'ie9' }))
-    .pipe(gulpif(useSourcemaps, sourcemaps.write('./')))
-    .pipe(gulp.dest(dest));
+    .pipe(gulpif(options.sourcemaps, sourcemaps.write('./')))
+    .pipe(gulp.dest(options.dest));
+};
+
+const createServeSassStream = function(file) {
+  return createCompileSassStream(file).pipe(browsersync.reload({ stream: true }));
 };
 
 module.exports = {
   name: NAME,
-  getStream: createCompileSassStream
+  getStream: createCompileSassStream,
+  getServeStream: createServeSassStream
 };

@@ -20,13 +20,16 @@ const defaultConfig = {
     },
 
     {
-      target: ROOT + '/scripts/bundle/**/*.js',
+      target: [
+        ROOT + '/scripts/bundle/**/*.js',
+        ROOT + '/scripts/test/*.js'
+      ],
       task: TASKS.jsBundle,
       options: {
         dest: 'scripts',
         minify: true,
         sourcemaps: true,
-        hash: '7y97T0h23l85'
+        watch: true
       }
     },
 
@@ -34,7 +37,8 @@ const defaultConfig = {
       target: ROOT + '/styles/**/*.scss',
       task: TASKS.styles,
       options: {
-        dest: 'styles'
+        dest: 'styles',
+        watch: true
       }
     },
 
@@ -43,7 +47,8 @@ const defaultConfig = {
       task: TASKS.templates,
       options: {
         useInjection: true,
-        templateLang: 'mustache'
+        templateLang: 'mustache',
+        watch: true
       }
     },
 
@@ -61,7 +66,7 @@ const defaultConfig = {
     dest: 'public',
     verbose: true,
     paint: 'bazookas',
-    injectPrefix: 'prefix'
+    staticHtmlServer: true
   }
 };
 

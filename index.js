@@ -5,7 +5,9 @@ module.exports = function(gulp) {
         painter     = require('./tasks/painter'),
         gulpsync    = require('gulp-sync')(gulp),
         taskManager = require('./utilities/taskManager'),
-        config      = require('./utilities/getConfig').getConfig();
+        gutil       = require('gulp-util'),
+        config      = require('./utilities/getConfig').getConfig()
+        taskNames   = require('./utilities/taskNames');
 
   const TASKS = {
     webpack: require('./tasks/run-webpack'),
@@ -16,9 +18,10 @@ module.exports = function(gulp) {
 
     inject: require('./tasks/inject'),
 
-    clean: 'clean',
-    destroy: 'destroy',
-    build: 'build'
+    clean: taskNames.clean,
+    destroy: taskNames.destroy,
+    build: taskNames.build,
+    serve: require('./tasks/dev-server')
   };
 
   // Allow some extra listeners in node.
@@ -26,6 +29,36 @@ module.exports = function(gulp) {
 
   // This array will contain all tasks necessary for the regular, default build task, in order.
   let buildTaskDependencies = [];
+
+
+  /**
+   * Define tasks.
+   * We define all tasks in their basic, single stream form.
+   * Next, we define the serve version of that task, to be used with
+   * browsersync.
+   */
+  // Compile sass to css and minify
+  gulp.task(TASKS.styles.name, function() {
+    return taskManager.createSingleStream(TASKS.styles);
+  });
+  // gulp.task('serve-' + TASKS.styles.name, function() {
+  //   return taskManager.createServeStream(TASKS.styles);
+  // });
+
+  // Bundle seperate js files. Optional minification.
+  gulp.task(TASKS.jsBundle.name, function() {
+    return taskManager.createSingleStream(TASKS.jsBundle);
+  });
+
+  // Run js (es6) files through webpack for more advanced js compilation
+  gulp.task(TASKS.webpack.name, function() {
+    return taskManager.createSingleStream(TASKS.webpack);
+  });
+
+  // Compile html templates (Supported: mustache)
+  gulp.task(TASKS.templates.name, function() {
+    return taskManager.createSingleStream(TASKS.templates);
+  });
 
   // File injection in html is a tricky thing. We need to get the correct, relative
   // paths of the files to inject, based on the result of several streams (tasks)
@@ -55,29 +88,9 @@ module.exports = function(gulp) {
   else {
     // Not using injection. Just add all the streams to the dependencies
     // of the build task.
-
-    // Compile sass to css and minify
-    gulp.task(TASKS.styles.name, function() {
-      return taskManager.createSingleStream(TASKS.styles);
-    });
     buildTaskDependencies.push(TASKS.styles.name);
-
-    // Bundle seperate js files. Optional minification.
-    gulp.task(TASKS.jsBundle.name, function() {
-      return taskManager.createSingleStream(TASKS.jsBundle);
-    });
     buildTaskDependencies.push(TASKS.jsBundle.name);
-
-    // Run js (es6) files through webpack for more advanced js compilation
-    gulp.task(TASKS.webpack.name, function() {
-      return taskManager.createSingleStream(TASKS.webpack);
-    });
     buildTaskDependencies.push(TASKS.webpack.name);
-
-    // Compile html templates (Supported: mustache)
-    gulp.task(TASKS.templates.name, function() {
-      return taskManager.createSingleStream(TASKS.templates);
-    });
     buildTaskDependencies.push(TASKS.templates.name);
   }
 
@@ -115,6 +128,10 @@ module.exports = function(gulp) {
         painter.paintBazookas();
       }
     }
+  });
+
+  gulp.task(TASKS.serve.name,[TASKS.build],  function() {
+    return TASKS.serve.getStream(templateStreams.length > 0);
   });
 
   // Copies all the default files (listed in default array above) to the current working directory.

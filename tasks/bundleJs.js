@@ -10,8 +10,6 @@ const gulp        = require('gulp'),
 
 const NAME = require('../utilities/taskNames').jsBundle;
 
-let increment = 1;
-
 /**
  * createBundleJSStream
  * Creates a gulp stream for bundling javascript files.
@@ -44,10 +42,6 @@ const createBundleJSStream = function(file) {
   let suffix = options.minify ? '.min' : '';
   suffix += options.hash ? '.' + options.hash : '';
 
-  // If several files use the default name, add an incrementing number.
-  let incrementSuffix = (increment > 1) ? '-' + increment : '';
-  increment++;
-
   let dest = utility.getCorrectDest(file);
 
   return gulp.src(file.target)
@@ -56,7 +50,6 @@ const createBundleJSStream = function(file) {
       .pipe(gulpif(options.minify, uglify()))
       .on('error', gutil.log)
       .pipe(rename(function(path) {
-        path.basename += incrementSuffix;
         path.basename += suffix;
 
         utility.printTaskDetails(file.target, NAME, dest + '/' + path.basename + path.extname);

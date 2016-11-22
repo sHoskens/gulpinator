@@ -1,9 +1,10 @@
 const gulp        = require('gulp'),
       inject      = require('gulp-inject'),
-      gutil        = require('gulp-util'),
+      gutil       = require('gulp-util'),
       lazypipe    = require('lazypipe'),
-      eventStream   = require('event-stream'),
-      config      = require('../utilities/getConfig').getConfig();
+      eventStream = require('event-stream'),
+      config      = require('../utilities/getConfig').getConfig(),
+      taskNames   = require('../utilities/taskNames');
 
 const NAME = require('../utilities/taskNames').inject;
 
