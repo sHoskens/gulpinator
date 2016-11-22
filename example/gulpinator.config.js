@@ -7,10 +7,11 @@ const TASKS = require('../utilities/taskNames');
 const defaultConfig = {
   files: [
     {
-      target: '',
+      target: ROOT + '/scripts/main.js',
       task: TASKS.webpack,
       options: {
         dest: 'scripts',
+        watch: true,
         webpack: {
           entry: path.join(__dirname, ROOT, 'scripts', 'main.js'),
           output: path.join(__dirname, 'public', 'scripts')

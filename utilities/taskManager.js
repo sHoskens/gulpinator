@@ -21,7 +21,6 @@ const _             = require('lodash'),
  */
 function getStreamsForTask(task, useServeStream) {
   let streams = [];
-  gutil.log(gutil.colors.blue('----- RUNNING ON TASK ' + task.name));
   if (config.files.length > 0) {
     for (let i = 0; i < config.files.length; i++) {
       if (config.files[i].task === task.name) {

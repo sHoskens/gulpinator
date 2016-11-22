@@ -3,7 +3,6 @@ module.exports = function(gulp) {
   const path        = require('path'),
         del         = require('del'),
         painter     = require('./tasks/painter'),
-        gulpsync    = require('gulp-sync')(gulp),
         taskManager = require('./utilities/taskManager'),
         gutil       = require('gulp-util'),
         config      = require('./utilities/getConfig').getConfig()
@@ -38,7 +37,6 @@ module.exports = function(gulp) {
    * browsersync.
    */
   for (let task of [TASKS.styles, TASKS.jsBundle, TASKS.webpack, TASKS.templates]) {
-    gutil.log(task);
     gulp.task(task.name, function() {
       return taskManager.createSingleStream(task);
     });

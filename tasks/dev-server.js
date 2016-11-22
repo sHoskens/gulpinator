@@ -1,9 +1,10 @@
-const gulp              = require('gulp'),
-      util              = require('gulp-util'),
-      config            = require('../utilities/getConfig').getConfig(),
-      browsersync       = require('browser-sync'),
-      taskNames         = require('../utilities/taskNames'),
-      _                 = require('lodash');
+const gulp         = require('gulp'),
+      util         = require('gulp-util'),
+      config       = require('../utilities/getConfig').getConfig(),
+      browsersync  = require('browser-sync'),
+      taskNames    = require('../utilities/taskNames'),
+      gutil        = require('gulp-util'),
+      _            = require('lodash');
 
 const NAME = require('../utilities/taskNames').serve;
 
@@ -32,10 +33,9 @@ var createDevServerStream = function(useInjection) {
 
   browsersync.init(options);
 
+  gutil.log('hey');
+  gutil.log(sources);
   _.forEach(sources, function(source, key) {
-    // gulp.watch(source, [key]).on('change', function(event) {
-    //   changeEvent(event);
-    // });
     if (useInjection && key === 'serve-' + taskNames.templates) {
       gulp.watch(source, [taskNames.inject]).on('change', browsersync.reload);
     }
@@ -43,7 +43,7 @@ var createDevServerStream = function(useInjection) {
       gulp.watch(source, [key]);
     }
   });
-
+  gutil.log('here?');
   // gulp.watch(sources.styles, ['compile-sass'])
   //     .on('change', function(event) { changeEvent(event); });
   //
