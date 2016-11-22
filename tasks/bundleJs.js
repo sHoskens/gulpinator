@@ -48,13 +48,13 @@ const createBundleJSStream = function(file) {
     .pipe(gulpif(options.sourcemaps, sourcemaps.init({ loadMaps: true })))
       .pipe(concat(options.name + '.js'))
       .pipe(gulpif(options.minify, uglify()))
-      .on('error', gutil.log)
+      // .on('error', gutil.log)
       .pipe(rename(function(path) {
         path.basename += suffix;
 
         utility.printTaskDetails(file.target, NAME, dest + '/' + path.basename + path.extname);
       }))
-    .pipe(gulpif(options.sourceMaps, sourcemaps.write('./')))
+    .pipe(gulpif(options.sourcemaps, sourcemaps.write('./')))
     .pipe(gulp.dest(dest));
 };
 

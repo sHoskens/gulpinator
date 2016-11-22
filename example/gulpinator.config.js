@@ -39,7 +39,8 @@ const defaultConfig = {
       task: TASKS.styles,
       options: {
         dest: 'styles',
-        watch: true
+        watch: true,
+        sourcemaps: true
       }
     },
 
@@ -47,7 +48,7 @@ const defaultConfig = {
       target: ROOT + '/templates/pages/*.mustache',
       task: TASKS.templates,
       options: {
-        useInjection: true,
+        useInjection: false,
         templateLang: 'mustache',
         watch: true
       }
@@ -57,7 +58,7 @@ const defaultConfig = {
       target: ROOT + '/templates/**/*.html',
       task: TASKS.templates,
       options: {
-        useInjection: true,
+        useInjection: false,
         watch: true
       }
     }
