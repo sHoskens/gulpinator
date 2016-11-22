@@ -3,6 +3,7 @@ const gulp        = require('gulp'),
       gulpif      = require('gulp-if'),
       rename      = require('gulp-rename'),
       mustache    = require('gulp-mustache'),
+      browsersync = require('browser-sync'),
       config      = require('../utilities/getConfig').getConfig();
 
 const NAME = require('../utilities/taskNames').templates;
@@ -33,7 +34,7 @@ const createUnfinishedTemplatesStream = function(file) {
   return {
     dest: dest,
     unfinishedStream: gulp.src(file.target)
-      .pipe(gulpif(file.options && file.options.templateLang === 'mustache' ,mustache()))
+      .pipe(gulpif(file.options && file.options.templateLang === 'mustache', mustache()))
       .pipe(gulpif(config.options.verbose, rename(function (path) {
         path.extname = '.html';
 

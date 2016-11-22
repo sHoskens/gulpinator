@@ -37,29 +37,23 @@ module.exports = function(gulp) {
    * Next, we define the serve version of that task, to be used with
    * browsersync.
    */
-  // Compile sass to css and minify
-  gulp.task(TASKS.styles.name, function() {
-    return taskManager.createSingleStream(TASKS.styles);
-  });
-  // gulp.task('serve-' + TASKS.styles.name, function() {
-  //   return taskManager.createServeStream(TASKS.styles);
-  // });
+  for (let task of [TASKS.styles, TASKS.jsBundle, TASKS.webpack, TASKS.templates]) {
+    gutil.log(task);
+    gulp.task(task.name, function() {
+      return taskManager.createSingleStream(task);
+    });
 
-  // Bundle seperate js files. Optional minification.
-  gulp.task(TASKS.jsBundle.name, function() {
-    return taskManager.createSingleStream(TASKS.jsBundle);
-  });
+    gulp.task('serve-' + task.name, function() {
+      return taskManager.createServeStream(task);
+    });
+  }
 
-  // Run js (es6) files through webpack for more advanced js compilation
-  gulp.task(TASKS.webpack.name, function() {
-    return taskManager.createSingleStream(TASKS.webpack);
-  });
-
-  // Compile html templates (Supported: mustache)
-  gulp.task(TASKS.templates.name, function() {
-    return taskManager.createSingleStream(TASKS.templates);
-  });
-
+  /**
+   * File injection in html is a tricky thing. We need to get the correct, relative
+   * paths of the files to inject, based on the result of several streams (tasks)
+   * First, we need to check if any of the files defined in the config need injection.
+   * If not, skip all fancy logic and just handle the regular tasks.
+   */
   // File injection in html is a tricky thing. We need to get the correct, relative
   // paths of the files to inject, based on the result of several streams (tasks)
   // First, we need to check if any of the files defined in the config need injection.

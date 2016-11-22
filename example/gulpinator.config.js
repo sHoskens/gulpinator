@@ -56,7 +56,8 @@ const defaultConfig = {
       target: ROOT + '/templates/**/*.html',
       task: TASKS.templates,
       options: {
-        useInjection: true
+        useInjection: true,
+        watch: true
       }
     }
   ],
@@ -66,7 +67,9 @@ const defaultConfig = {
     dest: 'public',
     verbose: true,
     paint: 'bazookas',
-    staticHtmlServer: true
+    browsersync: {
+      staticHtmlServer: true
+    }
   }
 };
 

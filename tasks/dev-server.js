@@ -2,6 +2,7 @@ const gulp              = require('gulp'),
       util              = require('gulp-util'),
       config            = require('../utilities/getConfig').getConfig(),
       browsersync       = require('browser-sync'),
+      taskNames         = require('../utilities/taskNames'),
       _                 = require('lodash');
 
 const NAME = require('../utilities/taskNames').serve;
@@ -35,7 +36,12 @@ var createDevServerStream = function(useInjection) {
     // gulp.watch(source, [key]).on('change', function(event) {
     //   changeEvent(event);
     // });
-    gulp.watch(source, [key]);
+    if (useInjection && key === 'serve-' + taskNames.templates) {
+      gulp.watch(source, [taskNames.inject]).on('change', browsersync.reload);
+    }
+    else {
+      gulp.watch(source, [key]);
+    }
   });
 
   // gulp.watch(sources.styles, ['compile-sass'])
@@ -128,7 +134,10 @@ var createSources = function(files) {
   let sources = {};
   _.forEach(files, function(file) {
     if (file.options && file.options.watch) {
-      (sources[file.task] || (sources[file.task] = [])).push(file.target);
+      let target = typeof file.options.watch === 'string' ? file.options.watch : file.target;
+      let taskName = 'serve-' + file.task;
+
+      (sources[taskName] || (sources[taskName] = [])).push(target);
     }
   });
 
