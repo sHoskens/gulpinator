@@ -23,7 +23,7 @@ Create a *gulpfile.js* in your project root, containing just this line:
 
 ```
 var gulp = require('gulp');
-require('gulpinator')(gulp);
+require('gulpinator').initialize(gulp);
 ```
 
 Since this is a basic gulpfile, you can choose to add additional tasks here.
@@ -362,7 +362,7 @@ Besides the files object in the defaultConfig object, you can also add an option
 * injectPrefix: Add a prefix to each injected asset's path. This only changes the injected path, not the actual file name or location. Use this to hack your injection with nasty php twig templates!
 
 #### 4.1.9 Environment variables
-Last but not least, gulpinator allow different environment variables. You probably want to define the default environment as a development environment with a less strict, fast approach, and a seperate production environment for a build ready for a life environment.
+Gulpinator also allows different environment variables. You probably want to define the default environment as a development environment with a less strict, fast approach, and a seperate production environment for a build ready for a life environment.
 To do this, define a seperate configuration object with the options for a specific environment, and export it under the name of the environment, like so:
 
 ```
@@ -394,7 +394,59 @@ Notice two things: First, you need to export the object under a string in module
 
 Next, notice how we have to explicitly set the options.verbose parameter to false in the production environment, even though the verbose option is default false. This is because the production configuration is a **merge** of the default configuration and the production configuration. This means that all properties that are not explicitly defined in the production configuration are the same in both environments. Defining a property in an environment configuration is actually overwriting that same property in the default configuration.
 
-##5. Roadmap
+Because we simply merge each environment config with the default one, the files array is overwritten. If you want to change a specific option on a specific task, you either need to rebuild the entire files array and change that single value (bad), or just define each task in variables and rebuild the files array dynamically. (good)
+
+####4.1.10 Development server
+Besides the `gulp build` command, gulpinator also has a `gulp serve` command. This will create a browsersync development server on port 8000, serving files in your build folder as defined in options.dest. You don't need to enter .html in the url for any html files.
+
+If you want gulpinator to watch for changes (for example, rerun the compile-sass task when you change a .scss file), enable the 'watch' option in each desired task like so:
+
+``` 
+...
+{
+  target: ROOT + '/styles/**/*.scss',
+  task: TASKS.styles,
+  options: {
+    dest: 'styles',
+    sourcemaps: true,
+    watch: true
+  }
+},
+...
+```
+A few caveats: Don't use randomized hashing (cache busting) with the development server. It's unnecessary in a dev environment, and will just result in a crazy amount of files cluttering your build folder.
+
+For the webpack task, make sure the target is equal to options.webpack.entry. If you keep the target empty, gulpinator will not know where to look.
+
+## 5 Extending Gulpinator
+The basic gulpfile.js looks like this, and initializes gulpinator like normal:
+```
+var gulp = require('gulp');
+require('gulpinator').initialize(gulp);
+```
+
+To extend basic gulpinator functionality with your own, start by requiring gulpinator to a variable. Call the *initializeSubTasks* function instead of *initialize* to start the basic gulpinator setup. Next, you can overwrite existing tasks.
+
+For example, if you want to overwrite the move-file with your own logic, you can do this in gulpfile.js:
+
+```
+const gulp = require('gulp');
+const gulpinator = require('../index');
+
+gulpinator.initializeSubTasks(gulp);
+
+gulp.task('move-files', function() {
+  // do something fancy.
+});
+
+gulpinator.initializeMainTasks(gulp);
+```
+
+After overwriting a task, you can simply call the *initializeMainTasks* function to add all tasks, including your overridden ones, to the *build* and *serve* task. 
+
+If you want to define completely custom tasks and add them to the *build* and *serve* dependency queque, you can change the *gulpinator.buildTaskDependencies* array.
+
+## 6 Roadmap
 ### Gulpinator modules
 Create seperate npm packages with small gulpinator modules that can be slotted in. I can use this to add advanced features without increasing install time of the main gulpinator.
 

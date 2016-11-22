@@ -8,21 +8,6 @@ const gulp         = require('gulp'),
 
 const NAME = require('../utilities/taskNames').serve;
 
-// const createupWebpackDevServerStream = function(file) {
-//   // Either get the options for the file as defined in the config, or use
-//   // the default.
-//   let options = file.options || {};
-//   let dest = utility.getCorrectDest(file);
-//
-//   let webpackConfig;
-//   if (options.customWebpackConfig) {
-//     webpackConfig = require(file.options.customWebpackConfig);
-//   }
-//   else {
-//     webpackConfig = createWebpackConfig(file);
-//   }
-// };
-
 var createDevServerStream = function(useInjection) {
   if (browsersync.active) {
     return;
@@ -33,8 +18,6 @@ var createDevServerStream = function(useInjection) {
 
   browsersync.init(options);
 
-  gutil.log('hey');
-  gutil.log(sources);
   _.forEach(sources, function(source, key) {
     if (useInjection && key === 'serve-' + taskNames.templates) {
       gulp.watch(source, [taskNames.inject]).on('change', browsersync.reload);
@@ -43,18 +26,6 @@ var createDevServerStream = function(useInjection) {
       gulp.watch(source, [key]);
     }
   });
-  gutil.log('here?');
-  // gulp.watch(sources.styles, ['compile-sass'])
-  //     .on('change', function(event) { changeEvent(event); });
-  //
-  // gulp.watch(sources.scripts, ['compile-scripts'])
-  //     .on('change', function(event) {
-  //       changeEvent(event);
-  //       browsersync.reload();
-  //     });
-  //
-  // gulp.watch(sources.html, ['build-inject'])
-  //     .on('change', function(event) { changeEvent(event); });
 };
 
 /**
