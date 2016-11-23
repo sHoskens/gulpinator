@@ -46,7 +46,8 @@ var createBrowsersyncOptions = function(config) {
     port: 8000,
     isProxy: false,
     proxyTarget: 3000,
-    websockets: false
+    websockets: false,
+    staticHtmlServer: false
   };
 
   if (!config.options.browsersync) {
