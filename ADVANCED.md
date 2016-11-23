@@ -60,7 +60,7 @@ If you want to create a more complex webpack configuration, you can. Simply defi
 
 <a name="injection"></a>
 ##HTML Injection
-Gulpinator allows for automatic injection of all assets generated through the pipeline in html files. This means you can generate all your bundles, change their names or add hashes, and have a correct path entered in a <link> or <script> tag in your html files, in the order you want.
+Gulpinator allows for automatic injection of all assets generated through the pipeline in html files. This means you can generate all your bundles, change their names or add hashes, and have a correct path entered in a link or script tag in your html files, in the order you want.
 
 All this is quite easy to configure. There are two parts: You need to tell gulpinator you want to use injection, and you need to define the injection locations in your templates.
 
@@ -77,7 +77,7 @@ First, enable injection in your desired templates by switching on the option:
 }
 ```
 
-Now, gulpinator will pass all injectable streams (Styles, js bundles, webpack) through the template stream. In this template stream, gulpinator will use gulp-inject to search for specifically formatted HTML comments, and inject correct <link> or <script> tags in between these comments. An example index.html page:
+Now, gulpinator will pass all injectable streams (Styles, js bundles, webpack) through the template stream. In this template stream, gulpinator will use gulp-inject to search for specifically formatted HTML comments, and inject correct link or script tags in between these comments. An example index.html page:
 
 ```
 <!doctype html>

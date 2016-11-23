@@ -116,7 +116,7 @@ const initializeSubTasks = function(gulp) {
 const initializeMainTasks = function(gulp) {
   // Create the main tasks, which run all other tasks defined above in correct order.
   gulp.task(TASKS.build, buildTaskDependencies, function() {
-    if (config.paint) {
+    if (config.options.paint) {
       if( config.options.paint.toLowerCase() === 'gulpinator') {
         painter.paintGulpinator();
       }
