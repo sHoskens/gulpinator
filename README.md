@@ -4,18 +4,24 @@ A gulp-based frontend bundler. It's purpose is to simplify setting up an advance
 
 Improvements and bugfixes are, of course, always welcome.
 
-[Read a step by step tutorial here](TUTORIAL.md)
+[Basic step by step tutorial](TUTORIAL.md)
+
+[Advanced tutorial](ADVANCED.md)
 
 ##Contents
 
-1. Installation
-2. Quick reference
-3. Overview 
-4. Tutorial
-5. Extending Gulpinator
-6. Work in progress: Wishlist
+[Installation](#installation)
 
-##1. Installation
+[Quick reference](#quickRef)
+
+[Overview ](#overview)
+
+[Extending Gulpinator](#extending)
+
+[Work in progress: Wishlist](#roadmap)
+
+<a name="installation"></a>
+##Installation
 
 Install using npm.
 
@@ -34,7 +40,8 @@ For the standard configuration file with some sensible defaults, run `gulp init`
 
 All configuration of gulpinator happens in *gulpinator.config.js* 
 
-##2 Quick Reference 
+<a name="quickRef"></a>
+##Quick Reference 
 A quick reference for options for those already accustomed to gulpinator.
 
 ####TASKS
@@ -85,6 +92,7 @@ Below the files array, you must place an options object. It only has one require
   * options.browsersync.websockets: {Boolean} Enable websockets.
   * options.browsersync.staticHtmlServer: {Boolean} If true, you can use pretty urls to visit html pages. So *http://localhost:8000/main* instead of *http://localhost:8000/main.html*.
 
+<a name="overview"></a>
 ##3 Overview
 This opinionated gulp-automated workflow assumes you want to build your entire project to a single destination folder, bundle your assets, write your stylesheets with Sass and javascript in ES6. It has optional support for mustache templating, and allows slotting in a more advanced webpack configuration.
 
@@ -96,10 +104,8 @@ Once you have configured *gulpinator.config.js* to do what you want, run gulpina
 * `gulp clean` Clears the build folder of everything except images.
 * `gulp destroy` Completely clears the build folder.
 
-##4 Tutorial
-[Read a step by step tutorial here](TUTORIAL.md)
-
-## 5 Extending Gulpinator
+<a name="extending"></a>
+## Extending Gulpinator
 The basic gulpfile.js looks like this, and initializes gulpinator like normal:
 ```
 var gulp = require('gulp');
@@ -127,7 +133,8 @@ After overwriting a task, you can simply call the *initializeMainTasks* function
 
 If you want to define completely custom tasks and add them to the *build* and *serve* dependency queque, you can change the *gulpinator.buildTaskDependencies* array.
 
-## 6 Roadmap
+<a name="roadmap"></a>
+## Roadmap
 ### Gulpinator modules
 Create seperate npm packages with small gulpinator modules that can be slotted in. I can use this to add advanced features without increasing install time of the main gulpinator.
 
