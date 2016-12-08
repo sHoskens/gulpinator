@@ -1,6 +1,7 @@
 const gulp        = require('gulp'),
       utility     = require('../utilities/utility'),
       gulpif      = require('gulp-if'),
+      gutil       = require('gulp-util'),
       rename      = require('gulp-rename'),
       config      = require('../utilities/getConfig').getConfig();
 

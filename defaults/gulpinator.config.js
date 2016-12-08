@@ -3,7 +3,7 @@
 const ROOT = './src';
 const VENDOR = './vendor'
 const path = require('path');
-const TASKS = require('../utilities/taskNames');
+const TASKS = require('gulpinator/utilities/taskNames');
 
 // Some sensible defaults, to get you started.
 let bundleLibs = {
