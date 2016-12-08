@@ -1,0 +1,1 @@
+console.log('I\'m example bundle 2!');
