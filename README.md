@@ -50,6 +50,7 @@ A quick reference for options for those already accustomed to gulpinator.
   * options.dest: {String} the destination path, added to the globally defined dest.
   * options.sourcemaps: {Boolean} wether to use sourcemaps. **Default: false**
   * options.hash: {String} suffix to be added to the file, used for cache busting. **Default: ''**
+  * options.includePaths: {Array} Relative paths to additional css or scss files, outside your sass folder. (i.e. vendor files). **Default: []**
   
 * jsBundle
   * [REQUIRED] target: {String, Array} glob pattern or array of glob patterns

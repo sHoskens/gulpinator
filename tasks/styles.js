@@ -69,7 +69,7 @@ const createCompileSassStream = function(file) {
           );
         }
       })))
-      .pipe(sass())
+      .pipe(sass({includePaths: options.includePaths }))
       .pipe(autoprefixer('> 5%'))
       .pipe(cleanCSS({ compatibility: 'ie9' }))
     .pipe(gulpif(options.sourcemaps, sourcemaps.write('./')))
