@@ -74,10 +74,18 @@ var createBrowsersyncOptions = function(config) {
   };
 
   if (config.options.browsersync.isProxy) {
-    options.proxy = {
-      target: config.browsersync.proxyTarget || defaultOptions.proxyTarget,
-      ws: config.browsersync.websockets || defaultOptions.websockets
-    };
+    try {
+      options.proxy = {
+        target: config.options.browsersync.proxyTarget || defaultOptions.proxyTarget,
+        ws: config.options.browsersync.websockets || defaultOptions.websockets
+      };
+    }
+    catch(e) {
+      options.proxy = {
+        target: defaultOptions.proxyTarget,
+        ws: defaultOptions.websockets
+      };
+    }
   }
   else {
     options.server = {
