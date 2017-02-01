@@ -1,6 +1,7 @@
 const gulp          = require('gulp'),
       gutil         = require('gulp-util'),
-      webpack       = require('webpack-stream'),
+      webpack       = require('webpack'),
+      gulpWebpack   = require('webpack-stream'),
       config        = require('../utilities/getConfig').getConfig(),
       utility       = require('../utilities/utility'),
       defWebpackConfig = require('../utilities/webpackConfig');
@@ -36,7 +37,7 @@ const createWebpackStream = function(file) {
   }
 
   return gulp.src('src/defined/in/webpack/config')
-    .pipe(webpack(webpackConfig))
+    .pipe(gulpWebpack(webpackConfig, webpack))
     .pipe(gulp.dest(dest));
 };
 

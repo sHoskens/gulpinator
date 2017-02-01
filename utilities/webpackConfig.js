@@ -36,7 +36,7 @@ const createWebpackConfig = function(file) {
       loaders: [
         {
           test   : /.js$/,
-          loader : 'babel',
+          loader : 'babel-loader',
           query: {
             cacheDirectory: true,
             presets: ['es2015']
