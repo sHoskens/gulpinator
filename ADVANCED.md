@@ -15,7 +15,7 @@ A continuation of the basic step-by-step guide to show gulpinators more advanced
 [Development server](#server)
 
 <a name="webpack"></a>
-##Webpack
+## Webpack
 Gulpinator also supports webpack for more advanced functionality. The webpack task can be used as a wrapper around webpack, allowing all advantages of that system, or in it's simplest form as a way to compile an ES6 app.
 
 If we want to compile an app, written with ES6 and using ES6 module syntax, we need an entry point. This is a .js file which is the starting point for the dependency management of the app. Configuration for this object would look like this:
@@ -59,7 +59,7 @@ If you want to create a more complex webpack configuration, you can. Simply defi
 ```
 
 <a name="injection"></a>
-##HTML Injection
+## HTML Injection
 Gulpinator allows for automatic injection of all assets generated through the pipeline in html files. This means you can generate all your bundles, change their names or add hashes, and have a correct path entered in a link or script tag in your html files, in the order you want.
 
 All this is quite easy to configure. There are two parts: You need to tell gulpinator you want to use injection, and you need to define the injection locations in your templates.
@@ -110,7 +110,7 @@ All assets compiled through the styles task require a `<!-- compile-sass:css -->
 If you give a name to the assets passing through a task with the options.name attribute, then you need to use `<!-- your-name:js -->`. You can use this to determine the order of bundles.
 
 <a name="global"></a>
-##Global options
+## Global options
 Besides the files object in the defaultConfig object, you can also add an options object. In here, global configuration options are defined.
 
 * dist: The global destination path. If you define a specific destination in a task, this destination will be appended to the global destination. So, for example, if the global options.dist is 'public', and the options.dist of the styles task is 'styles', then the styles assets will be saved to *public/styles*.
@@ -120,7 +120,7 @@ Besides the files object in the defaultConfig object, you can also add an option
 * injectPrefix: Add a prefix to each injected asset's path. This only changes the injected path, not the actual file name or location. Use this to hack your injection with nasty php twig templates!
 
 <a name="environment"></a>
-##Environment variables
+## Environment variables
 Gulpinator also allows different environment variables. You probably want to define the default environment as a development environment with a less strict, fast approach, and a seperate production environment for a build ready for a life environment.
 To do this, define a seperate configuration object with the options for a specific environment, and export it under the name of the environment, like so:
 
