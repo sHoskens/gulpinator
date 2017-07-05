@@ -2,7 +2,7 @@
 
 A step-by-step guide to configure a basic project with gulpinator.
 
-##Index
+## Index
 [Minimal setup](#minimal)
 
 [Moving Files](#moving)
@@ -47,7 +47,7 @@ Although this configuration file does not yet make gulpinator compile or move an
 
 
 <a name="moving"></a>
-##Moving files
+## Moving files
 Let's start simple. Gulpinator allows you to move files from one directory, to your build directory. It's handy for moving fonts or other files which don't require any fancy tasks, but you don't want to simply place in your public folder. (which might not be added to git)
 
 Our working directory is **src**. We want to move the file **src/fonts/helvetica.ttf** to our build directory **dest**. First, let's place **src** in a constant, since we will be refering to it a lot.
@@ -80,7 +80,7 @@ files: [
 Running `gulp build` should now move all .ttf files to your destination folder.
 
 <a name="stylesheets"></a>
-##Compiling stylesheets
+## Compiling stylesheets
 Next, let's do one of the most common occurrences of frontend automation: Style compilation. Gulpinator assumes you use sass, with the .scss extension. If we want to compile our sass files, located in **src/styles/**, we can change our files array to:
 
 ``` 
@@ -133,7 +133,7 @@ files: [
 When executing `gulp build`, gulpinator will now place the fonts in **public/fonts**, and compile the sass code to **public/styles**.
 
 <a name="templates"></a>
-##Compiling templates
+## Compiling templates
 Currently, gulpinator only supports .mustache templates and basic html.
 Compiling a mustache template with gulpinator follows exactly the same structure as the style task.
 
@@ -156,7 +156,7 @@ If we want to enable a templating language like mustache, we add it to the optio
 ```
 
 <a name="bundling"></a>
-##Javascript bundling
+## Javascript bundling
 Sometimes we just want to bundle a bunch of javascript in a single file. This can be some jQuery scripts, a few libraries, etc... Simply adding this object to the files array will take care of that:
 
 ```
@@ -172,7 +172,7 @@ Sometimes we just want to bundle a bunch of javascript in a single file. This ca
 We have now created a single script bundle, with the default name **script-bundle**, in **public/scripts**. If we would define several script bundles, gulpinator will add an incrementing number to the end of the filename.
 
 <a name="minify"></a>
-##Minification and sourcemaps
+## Minification and sourcemaps
 Simply compiling sass and javascript isn't quite enough these days. Let's minify our javascript, and add sourcemaps to both js and css. Additionaly, we want to enable a simple and controlled version of cache busting by adding a hash or version tag to the end of our filename. We also want to name our javascript bundle to 'my-script'. We can do this by changing the objects for our styles and javascript bundles in our files array to this:
 
 ```
@@ -200,5 +200,5 @@ Simply compiling sass and javascript isn't quite enough these days. Let's minify
 ```
 This will make gulpinator output *public/styles/main.1fe406r7lq22.css* and *public/scripts/my-script.min.7y97T0h23l85.js*, along with sourcemaps.
 
-##Advanced
+## Advanced
 Continue to the [advanced tutorial](ADVANCED.md) for more info on webpack, html injection, development server and more!
