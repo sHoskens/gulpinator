@@ -1,4 +1,4 @@
-#GULPINATOR
+# GULPINATOR
 
 A gulp-based frontend bundler. It's purpose is to simplify setting up an advanced gulp/webpack configuration, yet allow a certain amount of flexibility.
 
@@ -8,7 +8,7 @@ Improvements and bugfixes are, of course, always welcome.
 
 [Advanced tutorial](ADVANCED.md)
 
-##Contents
+## Contents
 
 [Installation](#installation)
 
@@ -21,7 +21,7 @@ Improvements and bugfixes are, of course, always welcome.
 [Work in progress: Wishlist](#roadmap)
 
 <a name="installation"></a>
-##Installation
+## Installation
 
 Install using npm.
 
@@ -44,7 +44,7 @@ All configuration of gulpinator happens in *gulpinator.config.js*
 ##Quick Reference 
 A quick reference for options for those already accustomed to gulpinator.
 
-####TASKS
+#### TASKS
 * styles: Compiles sass to css.
   * [REQUIRED] target: {String, Array} path glob pattern(s)
   * options.dest: {String} the destination path, added to the globally defined dest.
@@ -79,7 +79,7 @@ A quick reference for options for those already accustomed to gulpinator.
   * options.name: {String} If empty, webpack will bundle this file as *app.js*. If you enter a name, it will use that. If you enter `[hash]`, it will save the file with as a random hash .js. **Default: 'app'**
   * options.customWebpackConfig: {String} Only required if options.webpack is absent. Contains the path to your custom webpack config. 
   
-###General options
+###  General options
 Below the files array, you must place an options object. It only has one required property.
 
 * [REQUIRED] options.dest: {String} The default path gulpinator will write it's output files to.
@@ -94,7 +94,7 @@ Below the files array, you must place an options object. It only has one require
   * options.browsersync.staticHtmlServer: {Boolean} If true, you can use pretty urls to visit html pages. So *http://localhost:8000/main* instead of *http://localhost:8000/main.html*.
 
 <a name="overview"></a>
-##3 Overview
+## Overview
 This opinionated gulp-automated workflow assumes you want to build your entire project to a single destination folder, bundle your assets, write your stylesheets with Sass and javascript in ES6. It has optional support for mustache templating, and allows slotting in a more advanced webpack configuration.
 
 Once you have configured *gulpinator.config.js* to do what you want, run gulpinator with any of these commands:
@@ -139,11 +139,11 @@ If you want to define completely custom tasks and add them to the *build* and *s
 ### Gulpinator modules
 Create seperate npm packages with small gulpinator modules that can be slotted in. I can use this to add advanced features without increasing install time of the main gulpinator.
 
-###Unit test support
+### Unit test support
 I need to add more support for unit testing, but haven't yet decided on the best approach
 for this. Once I've tested and decided on a technology stack for unit and/or integration
 tests, I'll start automating it in here.
 
 
-###More HTML templating support
+### More HTML templating support
 Add support for several HTML templating preprocessors, like Jade, Handlebars,...
