@@ -1,5 +1,4 @@
 const gulp          = require('gulp'),
-      gutil         = require('gulp-util'),
       webpack       = require('webpack'),
       gulpWebpack   = require('webpack-stream'),
       config        = require('../utilities/getConfig').getConfig(),

@@ -200,5 +200,18 @@ Simply compiling sass and javascript isn't quite enough these days. Let's minify
 ```
 This will make gulpinator output *public/styles/main.1fe406r7lq22.css* and *public/scripts/my-script.min.7y97T0h23l85.js*, along with sourcemaps.
 
+## Optimizing images
+Images can be easily optimized using the excellent gulp-imagemin package. 
+```
+{
+  target: [ROOT + '/images/**/*.png', ROOT + '/images/**/*.jpg'],
+    task: TASKS.images,
+    options: {
+    dest: 'images'
+  }
+}
+```
+If you want to change the actual compression algorithms or other in-depth options, I suggest simply overwriting this with your own imagemin implementation.
+
 ## Advanced
 Continue to the [advanced tutorial](ADVANCED.md) for more info on webpack, html injection, development server and more!

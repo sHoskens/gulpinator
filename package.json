@@ -31,6 +31,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-concat-vendor": "0.0.4",
     "gulp-if": "^2.0.0",
+    "gulp-imagemin": "^3.3.0",
     "gulp-inject": "^3.0.0",
     "gulp-mustache": "^2.3.0",
     "gulp-rename": "^1.2.2",

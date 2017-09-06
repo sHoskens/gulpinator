@@ -61,6 +61,14 @@ const defaultConfig = {
         useInjection: false,
         watch: true
       }
+    },
+
+    {
+      target: [ROOT + '/images/**/*.png', ROOT + '/images/**/*.jpg'],
+      task: TASKS.images,
+      options: {
+        dest: 'images'
+      }
     }
   ],
 

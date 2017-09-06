@@ -41,7 +41,7 @@ For the standard configuration file with some sensible defaults, run `gulp init`
 All configuration of gulpinator happens in *gulpinator.config.js* 
 
 <a name="quickRef"></a>
-##Quick Reference 
+## Quick Reference 
 A quick reference for options for those already accustomed to gulpinator.
 
 #### TASKS
@@ -67,6 +67,10 @@ A quick reference for options for those already accustomed to gulpinator.
   * options.useInjection: {Boolean} Wether to use injection with gulp-inject. **Default: false**
   
 * move
+  * [REQUIRED] target: {String, Array} glob pattern or array of glob patterns
+  * options.dest: {String} the destination path, added to the globally defined dest.
+  
+* images
   * [REQUIRED] target: {String, Array} glob pattern or array of glob patterns
   * options.dest: {String} the destination path, added to the globally defined dest.
   

@@ -3,12 +3,12 @@ const gulp          = require('gulp'),
       sourcemaps    = require('gulp-sourcemaps'),
       sass          = require('gulp-sass'),
       concat        = require('gulp-concat'),
-      rename        = require('gulp-rename')
+      rename        = require('gulp-rename'),
       autoprefixer  = require('gulp-autoprefixer'),
       cleanCSS      = require('gulp-clean-css'),
       gulpif        = require('gulp-if'),
       browsersync   = require('browser-sync'),
-      config        = require('../utilities/getConfig').getConfig()
+      config        = require('../utilities/getConfig').getConfig(),
       utility       = require('../utilities/utility');
 
 const NAME = require('../utilities/taskNames').styles;

@@ -12,6 +12,7 @@ const TASKS = {
   jsBundle: require('./tasks/bundleJs'),
   templates: require('./tasks/templates'),
   move: require('./tasks/moveFiles'),
+  images: require('./tasks/images'),
 
   inject: require('./tasks/inject'),
 
@@ -46,7 +47,7 @@ const initializeSubTasks = function(gulp) {
    * Next, we define the serve version of that task, to be used with
    * browsersync.
    */
-  for (let task of [TASKS.styles, TASKS.jsBundle, TASKS.webpack, TASKS.templates]) {
+  for (let task of [TASKS.styles, TASKS.images, TASKS.jsBundle, TASKS.webpack, TASKS.templates]) {
     gulp.task(task.name, function() {
       return taskManager.createSingleStream(task);
     });
@@ -90,6 +91,12 @@ const initializeSubTasks = function(gulp) {
     return taskManager.createSingleStream(TASKS.move);
   });
   buildTaskDependencies.push(TASKS.move.name);
+
+  // Optimize images.
+  gulp.task(TASKS.images.name, function() {
+    return taskManager.createSingleStream(TASKS.images);
+  });
+  buildTaskDependencies.push(TASKS.images.name);
 
   // Clean the compilation folder of everything except images.
   gulp.task(TASKS.clean, function() {

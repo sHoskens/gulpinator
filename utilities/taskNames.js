@@ -5,6 +5,7 @@ module.exports = {
   templates: 'compile-templates',
   move: 'move-files',
   inject: 'inject-assets',
+  images: 'optimize-images',
 
   clean: 'clean',
   destroy: 'destroy',
