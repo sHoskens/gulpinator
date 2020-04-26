@@ -1,6 +1,6 @@
 # GULPINATOR
 
-** Discontinued this project a while ago, will delete soon.**
+**Discontinued this project a while ago, will delete soon.**
 
 A gulp-based frontend bundler. It's purpose is to simplify setting up an advanced gulp/webpack configuration, yet allow a certain amount of flexibility.
 
